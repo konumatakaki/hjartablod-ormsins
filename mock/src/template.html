@@ -1,0 +1,255 @@
+<title>hjartablod-ormsins 外観見本</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDGothic&family=Noto+Sans+JP:wght@400&display=swap">
+<style>
+/* 埋め込みフォント: Ubuntu の仮想マシンに実際に入っているものを、使う文字だけに絞って同梱 */
+@font-face { font-family: "VM DejaVu Sans Mono"; src: url(data:font/woff2;base64,{{DEJAVU_MONO}}) format("woff2"); }
+@font-face { font-family: "VM DejaVu Sans"; src: url(data:font/woff2;base64,{{DEJAVU_SANS}}) format("woff2"); }
+@font-face { font-family: "VM Liberation Mono"; src: url(data:font/woff2;base64,{{LIB_MONO}}) format("woff2"); }
+
+/* layout: 一列の作業メモ。見本の画面は 1280x720 の固定解像度で組み、表示幅に合わせて丸ごと縮小する */
+:root {
+  --bg: #f3f3f1;
+  --fg: #1d1f21;
+  --muted: #5b6066;
+  --rule: #c9cbc7;
+  --panel: #ffffff;
+  --font-body: "BIZ UDPGothic", "Noto Sans JP", "Hiragino Sans", sans-serif;
+  --font-note-mono: "BIZ UDGothic", monospace;
+
+  /* 画面の中の書体（設定資料から） */
+  --vm-mono: "VM DejaVu Sans Mono", monospace;      /* dwm の初期設定 monospace:size=10 → Ubuntu では DejaVu Sans Mono */
+  --vm-term: "VM Liberation Mono", monospace;       /* st の初期設定 Liberation Mono:pixelsize=12 */
+  --vm-sans: "VM DejaVu Sans", "Noto Sans JP", sans-serif; /* オフラインの Gradio は Web フォントを読めず、既定の sans に落ちる */
+  --vm-ja: "Noto Sans JP", sans-serif;              /* 日本語は fonts-noto-cjk（Noto Sans CJK JP と同じ字形） */
+
+  /* 画面の中の色。表示テーマに関係なく同じ */
+  --dwm-norm-bg: #222222; --dwm-norm-fg: #bbbbbb; --dwm-norm-border: #444444;
+  --dwm-sel-bg: #005577; --dwm-sel-fg: #eeeeee; --dwm-sel-border: #005577;
+  --st-bg: #000000; --st-fg: #e5e5e5; --st-green: #00cd00; --st-blue: #5c5cff;
+  --ff-chrome: #e3e3e3; --ff-fg: #222222; --ff-line: #bdbdbd;
+  --gr-bg: #ffffff; --gr-block: #f9fafb; --gr-line: #e5e7eb; --gr-fg: #1f2937; --gr-sub: #6b7280; --gr-primary: #f97316;
+  --cam-bg: #262626; --cam-fg: #f2f2f2; --rec: #e0201b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #17191b; --fg: #e4e5e3; --muted: #9aa0a6; --rule: #34383c; --panel: #1f2225; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #17191b; --fg: #e4e5e3; --muted: #9aa0a6; --rule: #34383c; --panel: #1f2225; color-scheme: dark; }
+
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.75;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+main { max-width: 1040px; margin-inline: auto; display: grid; gap: 40px; }
+header, .prose { display: grid; gap: 8px; max-width: 68ch; }
+h1 { font-size: 1.5rem; line-height: 1.3; margin: 0; text-wrap: balance; font-family: var(--font-note-mono); font-weight: 400; }
+h2 { font-size: 1.15rem; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.lede { color: var(--muted); }
+code { font-family: var(--font-note-mono); font-size: .9em; }
+section { display: grid; gap: 12px; }
+ol, ul { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.scroller { overflow-x: auto; }
+
+/* ---------- 固定解像度の画面 ---------- */
+.fit { min-width: 640px; position: relative; overflow: hidden; background: #000; }
+.screen { width: 1280px; height: 720px; transform-origin: 0 0; position: absolute; top: 0; left: 0;
+  display: grid; grid-template-rows: 19px 1fr; background: var(--dwm-norm-bg); }
+.screen * { box-sizing: border-box; }
+
+.bar { display: flex; align-items: stretch; background: var(--dwm-norm-bg); color: var(--dwm-norm-fg);
+  font: 13px/19px var(--vm-mono); white-space: nowrap; }
+.bar .tag { padding: 0 6px; }
+.bar .tag.on { background: var(--dwm-sel-bg); color: var(--dwm-sel-fg); }
+.bar .lt { padding: 0 8px; }
+.bar .title { flex: 1; background: var(--dwm-sel-bg); color: var(--dwm-sel-fg); padding: 0 8px; overflow: hidden; }
+.bar .status { padding: 0 8px; display: flex; gap: 10px; align-items: center; }
+.bar .status span { display: inline-flex; gap: 4px; align-items: center; }
+.ico { width: 12px; height: 12px; display: block; image-rendering: pixelated; }
+.ico rect { fill: currentColor; }
+.bar .rec { color: var(--rec); }
+
+/* dwm の初期値: mfact 0.55、枠線 1px */
+.tile { display: grid; grid-template-columns: 55% 45%; grid-template-rows: 50% 50%; min-height: 0; }
+.w { border: 1px solid var(--dwm-norm-border); min-width: 0; min-height: 0; overflow: hidden; position: relative; }
+.w.focus { border-color: var(--dwm-sel-border); }
+.w.master { grid-row: 1 / 3; }
+
+.cam { position: absolute; inset: 0; background: var(--cam-bg); color: var(--cam-fg); }
+.cam .frame { position: absolute; inset: 0; display: grid; place-items: center;
+  background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(255,255,255,.035) 16px 32px); }
+.cam .frame span { font: 14px var(--vm-ja); color: #9a9a9a; border: 1px dashed #666; padding: 10px 22px; }
+.cam .hud { position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; font: 13px var(--vm-mono); }
+.cam .hud .rec { color: var(--rec); }
+.cam .meter { position: absolute; right: 10px; top: 34px; bottom: 96px; width: 8px; background: linear-gradient(to top, #3fa34d 0 55%, #d8c43a 55% 80%, #333 80%); }
+.cam .subs { position: absolute; left: 0; right: 0; bottom: 14px; display: grid; gap: 4px; justify-items: center; font: 17px/1.5 var(--vm-ja); }
+.cam .subs div { background: rgba(0,0,0,.72); padding: 1px 8px; }
+.cam .subs .ft { font-family: var(--vm-sans); }
+.cam .subs .meta { color: #a8a8a8; font: 13px var(--vm-mono); }
+
+.term { position: absolute; inset: 0; background: var(--st-bg); color: var(--st-fg); font: 12px/15px var(--vm-term); padding: 2px; white-space: pre; }
+.term .p { color: var(--st-green); }
+.term .d { color: var(--st-blue); }
+
+.ff { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr; background: var(--gr-bg); }
+.ff .tabs { display: flex; background: var(--ff-chrome); color: var(--ff-fg); font: 12px/24px var(--vm-sans); border-bottom: 1px solid var(--ff-line); }
+.ff .tabs span { padding: 0 12px; border-right: 1px solid var(--ff-line); white-space: nowrap; }
+.ff .tabs span.on { background: var(--gr-bg); }
+.gr { padding: 12px; display: grid; gap: 10px; align-content: start; color: var(--gr-fg); font: 14px/1.4 var(--vm-sans); }
+.gr .blk { background: var(--gr-block); border: 1px solid var(--gr-line); border-radius: 8px; padding: 8px 10px; display: grid; gap: 4px; }
+.gr .blk small { color: var(--gr-sub); font-size: 12px; }
+.gr canvas { width: 100%; height: 84px; display: block; image-rendering: pixelated; }
+.gr .ipa { font-size: 17px; }
+.gr .btn { justify-self: start; background: var(--gr-primary); color: #fff; border-radius: 6px; padding: 4px 16px; font-weight: 700; }
+
+/* ---------- 書体の比較 ---------- */
+.cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.cmp figure { margin: 0; display: grid; gap: 6px; min-width: 0; }
+.cmp figcaption { font-size: .85rem; color: var(--muted); }
+.cmp pre { margin: 0; background: #000; color: #e5e5e5; padding: 8px; overflow-x: auto; }
+.cmp .old { font: 12px/15px "DejaVu Sans Mono", "Noto Sans Mono", "BIZ UDGothic", monospace; }
+.cmp .new { font: 12px/15px var(--vm-term); }
+
+/* ---------- アイコン ---------- */
+.icons { display: flex; flex-wrap: wrap; gap: 16px 28px; }
+.icons figure { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.icons .big { width: 48px; height: 48px; color: var(--fg); }
+.icons figcaption { font: 12px var(--font-note-mono); color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<main>
+  <header>
+    <h1>hjartablod-ormsins 外観見本</h1>
+    <p class="lede">(a) の平らで暗い最小構成を土台に、最小限のアイコンを付けた版。画面は 1280×720 の固定解像度で組み、整数の文字サイズにしたうえで、表示幅に合わせて丸ごと縮小している。</p>
+  </header>
+
+  <section aria-labelledby="h-screen">
+    <h2 id="h-screen">画面</h2>
+    <div class="scroller">
+      <div class="fit" id="fit">
+        <div class="screen" id="screen" role="img" aria-label="dwm 風のタイル状の画面。左にカメラ映像、右上に端末、右下にブラウザ">
+          <div class="bar">
+            <span class="tag on">1</span><span class="tag">2</span><span class="tag">3</span><span class="tag">4</span><span class="tag">5</span><span class="tag">6</span><span class="tag">7</span><span class="tag">8</span><span class="tag">9</span>
+            <span class="lt">[]=</span>
+            <span class="title">recorder.py - cam0 1920x1080 30fps</span>
+            <span class="status">
+              <span class="rec">{{ICON_cam}}REC 00:14:32</span>
+              <span>{{ICON_mic}}-18dB</span>
+              <span>{{ICON_gpu}}71% 9.8/16.0G</span>
+              <span>{{ICON_usb}}-</span>
+              <span>{{ICON_netoff}}OFFLINE</span>
+              <span>2026-10-15 14:32</span>
+            </span>
+          </div>
+          <div class="tile">
+            <div class="w master focus">
+              <div class="cam">
+                <div class="frame"><span>正面カメラの映像（立ち絵）</span></div>
+                <div class="hud"><span><span class="rec">● REC</span> cam0</span><span>00:14:32:07</span></div>
+                <div class="meter"></div>
+                <div class="subs">
+                  <div>SPEAKER_00: こんにちは。聞こえますか。</div>
+                  <div class="ft">SPEAKER_01: ████ ███████ ██</div>
+                  <div class="meta">[lang: is 0.34]</div>
+                </div>
+              </div>
+            </div>
+            <div class="w">
+              <div class="term"><span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ cat /sys/class/dmi/id/sys_vendor /sys/class/dmi/id/product_name
+QEMU
+Standard PC (Q35 + ICH9, 2009)
+<span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ ls sessions/
+session_001.wav  session_001.eaf  session_002.wav
+<span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ cd tools/phone-recog &amp;&amp; python app.py
+Running on local URL:  http://127.0.0.1:7860
+
+To create a public link, set `share=True` in `launch()`.
+█</div>
+            </div>
+            <div class="w">
+              <div class="ff">
+                <div class="tabs"><span class="on">phone-recog</span><span>127.0.0.1:7861</span><span>127.0.0.1:8501</span></div>
+                <div class="gr">
+                  <div class="blk"><small>MFCC (n_mfcc=20)  session_002.wav  00:14:28-00:14:32</small><canvas width="240" height="40"></canvas></div>
+                  <div class="blk"><small>phones (allosaurus, universal)</small><span class="ipa">tʰ a ʔ i n ɛ k a l u</span></div>
+                  <span class="btn">Submit</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-font">
+    <h2 id="h-font">前の版の書体が安っぽかった原因</h2>
+    <ol class="prose">
+      <li><b>指定した書体が、見る側の環境に入っていなかった。</b> DejaVu Sans Mono は Linux にはあるが、Mac や Windows やスマホにはない。英数字が、読み込んであった日本語書体（BIZ UDゴシック）の英字に落ちていた。日本語書体の英字は、日本語と並べるための設計なので、端末の文字としては別物に見える。</li>
+      <li><b>文字サイズが半端な値だった。</b> 画面の幅に比例させていたので、11.37px のような端数になり、輪郭がぼやけていた。本物の画面は整数のピクセルで描かれる。</li>
+      <li><b>書体の出どころがばらばらだった。</b> 端末、バー、道具の画面、字幕で、設定資料と関係のない書体が混ざっていた。</li>
+    </ol>
+    <p class="prose">この版では、仮想マシンに実際に入っている書体（DejaVu Sans Mono、Liberation Mono、DejaVu Sans）を、使う文字だけに絞って同梱した。どの書体がどこに出るかも、初期設定から導いている。</p>
+    <div class="cmp">
+      <figure><figcaption>前の版の指定（見る側の環境の書体に落ちる）</figcaption><pre class="old">analyst@hjartablod-ormsins:~$ python app.py
+Running on local URL:  http://127.0.0.1:7860
+tʰ a ʔ i n ɛ k a l u  0O1lI|</pre></figure>
+      <figure><figcaption>この版（Liberation Mono を同梱。st の初期設定）</figcaption><pre class="new">analyst@hjartablod-ormsins:~$ python app.py
+Running on local URL:  http://127.0.0.1:7860
+tʰ a ʔ i n ɛ k a l u  0O1lI|</pre></figure>
+    </div>
+    <p class="prose lede">残る差: Linux は文字の輪郭を画素の格子に合わせて描く（ヒンティング）が、Mac のブラウザはそれをしない。同じ書体でも、Mac で見ると少し柔らかく見える。気になるなら、最終的にはゲーム側で文字の描き方を揃える方法を検討する。</p>
+  </section>
+
+  <section aria-labelledby="h-icon">
+    <h2 id="h-icon">アイコン</h2>
+    <p class="prose">12×12 の1色のドット絵で描いた。既存のアイコン集を使わないのは、統一のためと、モダンなウェブ風の線画（AI がよく使う系統）を避けるため。必要になった機能にだけ付ける。</p>
+    <div class="icons">
+      <figure>{{BIG_cam}}<figcaption>cam 録画</figcaption></figure>
+      <figure>{{BIG_mic}}<figcaption>mic 音量</figcaption></figure>
+      <figure>{{BIG_gpu}}<figcaption>gpu 使用率</figcaption></figure>
+      <figure>{{BIG_usb}}<figcaption>usb 道具の搬入</figcaption></figure>
+      <figure>{{BIG_netoff}}<figcaption>netoff 切断</figcaption></figure>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var fit = document.getElementById('fit'), screen = document.getElementById('screen');
+  function scale() {
+    var s = fit.clientWidth / 1280;
+    screen.style.transform = 'scale(' + s + ')';
+    fit.style.height = (720 * s) + 'px';
+  }
+  scale();
+  window.addEventListener('resize', scale);
+
+  // matplotlib の coolwarm に近い配色。librosa は負の値を含むデータをこの配色で描く
+  var stops = [[59,76,192],[144,178,254],[221,221,221],[245,156,125],[180,4,38]];
+  function color(v) {
+    var x = Math.max(0, Math.min(1, v)) * (stops.length - 1);
+    var i = Math.min(stops.length - 2, Math.floor(x)), f = x - i, a = stops[i], b = stops[i + 1];
+    return 'rgb(' + Math.round(a[0] + (b[0] - a[0]) * f) + ',' + Math.round(a[1] + (b[1] - a[1]) * f) + ',' + Math.round(a[2] + (b[2] - a[2]) * f) + ')';
+  }
+  document.querySelectorAll('.gr canvas').forEach(function (cv) {
+    var ctx = cv.getContext('2d'), rows = 20, cols = 120, w = cv.width / cols, h = cv.height / rows;
+    for (var c = 0; c < cols; c++) {
+      var voiced = Math.sin(c / 7) + Math.sin(c / 3.1) > -0.4;
+      for (var r = 0; r < rows; r++) {
+        var v = r === 0 ? (voiced ? 0.92 : 0.12)
+          : 0.5 + (voiced ? 0.32 : 0.1) * Math.sin(c / (2 + r * 0.35) + r * 1.7) * Math.cos(r * 0.9 + c / 11) / (1 + r * 0.08);
+        ctx.fillStyle = color(v);
+        ctx.fillRect(c * w, (rows - 1 - r) * h, Math.ceil(w), Math.ceil(h));
+      }
+    }
+  });
+})();
+</script>
