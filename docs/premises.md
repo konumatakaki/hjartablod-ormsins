@@ -177,5 +177,7 @@
 | design-rules.md | デザインルール（仮）、落とし穴のチェックリスト、参考用スクリーンショット |
 | machine-spec.md | 作中の仮想マシンの設定資料 |
 | tech.md | 技術の設計 |
+| assets.md | 素材の仕様（画像の解像度、最初に欲しい画像） |
+| notes-syllabus.md | 学部の言語学概論ノートのシラバス |
 | style.md | オーナーの過去作の文体メモ |
 | open-questions.md | 未決事項 |
