@@ -149,11 +149,13 @@
 |---|---|---|
 | dwm のバー | DejaVu Sans Mono 13px | dwm の初期設定 `monospace:size=10`。Ubuntu では monospace が DejaVu Sans Mono になる |
 | 端末（st） | Liberation Mono 12px | st の初期設定 `Liberation Mono:pixelsize=12` |
-| ブラウザの中の道具（Gradio） | DejaVu Sans | オフラインなので Gradio は Web フォントを読めず、既定の sans に落ちる |
+| ブラウザの中の道具（Gradio） | Source Sans Pro | Gradio 6 が書体を同梱しているので、オフラインでもこれで出る（実機で確認。当初の「既定の sans に落ちる」は誤り） |
 | 日本語 | Noto Sans JP | Ubuntu の日本語書体 fonts-noto-cjk と同じ字形 |
 
 - ライセンスの注意: Liberation フォントは SIL OFL で、「Liberation」が予約書体名になっている。使う文字だけに絞った版（改変版）を配布するなら、名前を変える必要がある。最終版では、改変しない元のファイルを同梱するか、名前を変える。DejaVu は改変版の配布に名前の制約がほぼない（Bitstream Vera の名前を使わなければよい）。
 - 残る差: Linux はヒンティングで輪郭を画素に合わせるが、Mac のブラウザはしない。
+
+ルールとしてまとめたものは `design-rules.md`（仮）。
 
 ### 窓ごとの見た目の違い（確定）
 

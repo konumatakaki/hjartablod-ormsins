@@ -8,6 +8,9 @@
 @font-face { font-family: "VM DejaVu Sans Mono"; src: url(data:font/woff2;base64,{{DEJAVU_MONO}}) format("woff2"); }
 @font-face { font-family: "VM DejaVu Sans"; src: url(data:font/woff2;base64,{{DEJAVU_SANS}}) format("woff2"); }
 @font-face { font-family: "VM Liberation Mono"; src: url(data:font/woff2;base64,{{LIB_MONO}}) format("woff2"); }
+/* Gradio が同梱している Source Sans Pro（改変なしのファイルをそのまま埋め込み） */
+@font-face { font-family: "VM Source Sans Pro"; src: url(data:font/woff2;base64,{{SSP_REG}}) format("woff2"); font-weight: 400; }
+@font-face { font-family: "VM Source Sans Pro"; src: url(data:font/woff2;base64,{{SSP_BOLD}}) format("woff2"); font-weight: 700; }
 
 /* layout: 一列の作業メモ。見本の画面は 1280x720 の固定解像度で組み、表示幅に合わせて丸ごと縮小する */
 :root {
@@ -22,7 +25,8 @@
   /* 画面の中の書体（設定資料から） */
   --vm-mono: "VM DejaVu Sans Mono", monospace;      /* dwm の初期設定 monospace:size=10 → Ubuntu では DejaVu Sans Mono */
   --vm-term: "VM Liberation Mono", monospace;       /* st の初期設定 Liberation Mono:pixelsize=12 */
-  --vm-sans: "VM DejaVu Sans", "Noto Sans JP", sans-serif; /* オフラインの Gradio は Web フォントを読めず、既定の sans に落ちる */
+  --vm-sans: "VM DejaVu Sans", "Noto Sans JP", sans-serif; /* ブラウザの外枠など、システムの既定の sans */
+  --vm-gradio: "VM Source Sans Pro", "VM DejaVu Sans", sans-serif; /* Gradio 6 は Source Sans Pro を同梱しているので、オフラインでもこれで出る */
   --vm-ja: "Noto Sans JP", sans-serif;              /* 日本語は fonts-noto-cjk（Noto Sans CJK JP と同じ字形） */
 
   /* 画面の中の色。表示テーマに関係なく同じ */
@@ -59,12 +63,14 @@ ol, ul { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
 /* ---------- 固定解像度の画面 ---------- */
 .fit { min-width: 640px; position: relative; overflow: hidden; background: #000; }
 .screen { width: 1280px; height: 720px; transform-origin: 0 0; position: absolute; top: 0; left: 0;
-  display: grid; grid-template-rows: 19px 1fr; background: var(--dwm-norm-bg); }
+  display: grid; grid-template-rows: 20px 1fr; background: var(--dwm-norm-bg); }
 .screen * { box-sizing: border-box; }
 
 .bar { display: flex; align-items: stretch; background: var(--dwm-norm-bg); color: var(--dwm-norm-fg);
-  font: 13px/19px var(--vm-mono); white-space: nowrap; }
-.bar .tag { padding: 0 6px; }
+  font: 15px/20px var(--vm-mono); white-space: nowrap; }
+.bar .tag { padding: 0 6px; position: relative; }
+/* 窓のあるタグに付く小さな四角（dwm の初期の描画） */
+.bar .tag.occ::before { content: ""; position: absolute; left: 1px; top: 1px; width: 4px; height: 4px; background: currentColor; }
 .bar .tag.on { background: var(--dwm-sel-bg); color: var(--dwm-sel-fg); }
 .bar .lt { padding: 0 8px; }
 .bar .title { flex: 1; background: var(--dwm-sel-bg); color: var(--dwm-sel-fg); padding: 0 8px; overflow: hidden; }
@@ -100,12 +106,12 @@ ol, ul { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
 .ff .tabs { display: flex; background: var(--ff-chrome); color: var(--ff-fg); font: 12px/24px var(--vm-sans); border-bottom: 1px solid var(--ff-line); }
 .ff .tabs span { padding: 0 12px; border-right: 1px solid var(--ff-line); white-space: nowrap; }
 .ff .tabs span.on { background: var(--gr-bg); }
-.gr { padding: 12px; display: grid; gap: 10px; align-content: start; color: var(--gr-fg); font: 14px/1.4 var(--vm-sans); }
+.gr { padding: 12px 18px; display: grid; gap: 12px; align-content: start; color: var(--gr-fg); font: 14px/1.4 var(--vm-gradio); }
 .gr .blk { background: var(--gr-block); border: 1px solid var(--gr-line); border-radius: 8px; padding: 8px 10px; display: grid; gap: 4px; }
 .gr .blk small { color: var(--gr-sub); font-size: 12px; }
 .gr canvas { width: 100%; height: 84px; display: block; image-rendering: pixelated; }
-.gr .ipa { font-size: 17px; }
-.gr .btn { justify-self: start; background: var(--gr-primary); color: #fff; border-radius: 6px; padding: 4px 16px; font-weight: 700; }
+.gr .ipa { font-size: 15px; border: 1px solid var(--gr-line); border-radius: 6px; padding: 7px 10px; background: #fff; }
+.gr .btn { background: var(--gr-primary); color: #fff; border-radius: 6px; padding: 8px 16px; font-weight: 700; font-size: 16px; text-align: center; }
 
 /* ---------- 書体の比較 ---------- */
 .cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
@@ -136,7 +142,7 @@ ol, ul { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
       <div class="fit" id="fit">
         <div class="screen" id="screen" role="img" aria-label="dwm 風のタイル状の画面。左にカメラ映像、右上に端末、右下にブラウザ">
           <div class="bar">
-            <span class="tag on">1</span><span class="tag">2</span><span class="tag">3</span><span class="tag">4</span><span class="tag">5</span><span class="tag">6</span><span class="tag">7</span><span class="tag">8</span><span class="tag">9</span>
+            <span class="tag on occ">1</span><span class="tag">2</span><span class="tag">3</span><span class="tag">4</span><span class="tag">5</span><span class="tag">6</span><span class="tag">7</span><span class="tag">8</span><span class="tag">9</span>
             <span class="lt">[]=</span>
             <span class="title">recorder.py - cam0 1920x1080 30fps</span>
             <span class="status">
@@ -168,9 +174,8 @@ Standard PC (Q35 + ICH9, 2009)
 <span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ ls sessions/
 session_001.wav  session_001.eaf  session_002.wav
 <span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ cd tools/phone-recog &amp;&amp; python app.py
-Running on local URL:  http://127.0.0.1:7860
-
-To create a public link, set `share=True` in `launch()`.
+* Running on local URL:  http://127.0.0.1:7860
+* To create a public link, set `share=True` in `launch()`.
 █</div>
             </div>
             <div class="w">
@@ -196,7 +201,8 @@ To create a public link, set `share=True` in `launch()`.
       <li><b>文字サイズが半端な値だった。</b> 画面の幅に比例させていたので、11.37px のような端数になり、輪郭がぼやけていた。本物の画面は整数のピクセルで描かれる。</li>
       <li><b>書体の出どころがばらばらだった。</b> 端末、バー、道具の画面、字幕で、設定資料と関係のない書体が混ざっていた。</li>
     </ol>
-    <p class="prose">この版では、仮想マシンに実際に入っている書体（DejaVu Sans Mono、Liberation Mono、DejaVu Sans）を、使う文字だけに絞って同梱した。どの書体がどこに出るかも、初期設定から導いている。</p>
+    <p class="prose">この版では、仮想マシンに実際に入っている書体（DejaVu Sans Mono、Liberation Mono、DejaVu Sans）を、使う文字だけに絞って同梱した。道具の画面は、Gradio が同梱している Source Sans Pro。どの書体がどこに出るかも、初期設定から導いている。</p>
+    <p class="prose lede">第3版での修正: 実物の dwm、st、Gradio を動かして撮った画面と照合し、バーの文字の大きさ、窓のあるタグの印、Gradio の書体とボタン、起動時の出力の文言を直した。照合の結果は docs/design-rules.md にある。</p>
     <div class="cmp">
       <figure><figcaption>前の版の指定（見る側の環境の書体に落ちる）</figcaption><pre class="old">analyst@hjartablod-ormsins:~$ python app.py
 Running on local URL:  http://127.0.0.1:7860
