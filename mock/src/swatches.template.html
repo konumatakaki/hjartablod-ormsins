@@ -5,12 +5,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDGothic&family=Noto+Sans+JP:wght@400&display=swap">
 <style>
 /* 埋め込みフォント: Ubuntu の仮想マシンに実際に入っているものを、使う文字だけに絞って同梱 */
-@font-face { font-family: "VM DejaVu Sans Mono"; src: url(data:font/woff2;base64,{{DEJAVU_MONO}}) format("woff2"); }
-@font-face { font-family: "VM DejaVu Sans"; src: url(data:font/woff2;base64,{{DEJAVU_SANS}}) format("woff2"); }
-@font-face { font-family: "VM Liberation Mono"; src: url(data:font/woff2;base64,{{LIB_MONO}}) format("woff2"); }
+@font-face { font-family: "VM DejaVu Sans Mono"; src: url(data:font/woff2;base64,{{FONT_DejaVuSansMono}}) format("woff2"); }
+@font-face { font-family: "VM DejaVu Sans"; src: url(data:font/woff2;base64,{{FONT_DejaVuSans}}) format("woff2"); }
+@font-face { font-family: "VM Liberation Mono"; src: url(data:font/woff2;base64,{{FONT_LiberationMono-Regular}}) format("woff2"); }
 /* Gradio が同梱している Source Sans Pro（改変なしのファイルをそのまま埋め込み） */
-@font-face { font-family: "VM Source Sans Pro"; src: url(data:font/woff2;base64,{{SSP_REG}}) format("woff2"); font-weight: 400; }
-@font-face { font-family: "VM Source Sans Pro"; src: url(data:font/woff2;base64,{{SSP_BOLD}}) format("woff2"); font-weight: 700; }
+@font-face { font-family: "VM Source Sans Pro"; src: url(data:font/woff2;base64,{{FONT_SourceSansPro-Regular}}) format("woff2"); font-weight: 400; }
+@font-face { font-family: "VM Source Sans Pro"; src: url(data:font/woff2;base64,{{FONT_SourceSansPro-Bold}}) format("woff2"); font-weight: 700; }
 
 /* layout: 一列の作業メモ。見本の画面は 1280x720 の固定解像度で組み、表示幅に合わせて丸ごと縮小する */
 :root {

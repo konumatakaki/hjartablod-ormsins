@@ -1,0 +1,355 @@
+<title>hjartablod-ormsins 面接画面</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDGothic&family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;600&display=swap">
+<style>
+@font-face { font-family: "VM DejaVu Sans Mono"; src: url(data:font/woff2;base64,{{FONT_DejaVuSansMono}}) format("woff2"); }
+@font-face { font-family: "VM DejaVu Sans"; src: url(data:font/woff2;base64,{{FONT_DejaVuSans}}) format("woff2"); }
+@font-face { font-family: "VM Liberation Mono"; src: url(data:font/woff2;base64,{{FONT_LiberationMono-Regular}}) format("woff2"); }
+
+/* layout: 一列の作業メモ。面接画面は 1280x720 の固定解像度で組み、表示幅に合わせて丸ごと縮小する */
+:root {
+  --bg: #f3f3f1; --fg: #1d1f21; --muted: #5b6066; --rule: #c9cbc7; --panel: #ffffff;
+  --font-body: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
+  --font-note-mono: "BIZ UDGothic", monospace;
+
+  /* 仮想マシンの中（設定資料から） */
+  --vm-mono: "VM DejaVu Sans Mono", monospace;
+  --vm-term: "VM Liberation Mono", monospace;
+  --vm-sans: "VM DejaVu Sans", "Noto Sans JP", sans-serif;   /* Java の Dialog 書体は Ubuntu では DejaVu Sans になる */
+  --vm-ja: "Noto Sans JP", sans-serif;
+  --dwm-norm-bg: #222222; --dwm-norm-fg: #bbbbbb; --dwm-norm-border: #444444;
+  --dwm-sel-bg: #005577; --dwm-sel-fg: #eeeeee;
+  --st-bg: #000000; --st-fg: #e5e5e5; --st-green: #00cd00; --st-blue: #5c5cff;
+  --cam-bg: #262626; --rec: #e0201b;
+  --swing-face: #eeeeee; --swing-line: #b8cfe5; --swing-dark: #6382bf; --swing-text: #333333; --swing-sel: #c8ddf2;
+
+  /* 仮想マシンの外（主人公の頭の中）。記録されないものは、仮想マシンと違う書体と色にする */
+  --mind-bg: rgba(10, 10, 10, .93); --mind-fg: #ece9e2; --mind-dim: #a7a39a;
+  --mind-term: #e2b65c;               /* 主人公の注意が止まった語 */
+  --mind-font: "Noto Serif JP", serif;
+  --note-paper: #fbfbf9; --note-rule: #c9d9ec; --note-ink: #23262b; --note-red: #b23a2e;
+  --comm-bg: rgba(10, 10, 10, .88); --comm-fg: #d8d8d8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #17191b; --fg: #e4e5e3; --muted: #9aa0a6; --rule: #34383c; --panel: #1f2225; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #17191b; --fg: #e4e5e3; --muted: #9aa0a6; --rule: #34383c; --panel: #1f2225; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.75;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px; }
+main { max-width: 1040px; margin-inline: auto; display: grid; gap: 36px; }
+header, .prose { display: grid; gap: 8px; max-width: 68ch; }
+h1 { font-size: 1.5rem; line-height: 1.3; margin: 0; font-family: var(--font-note-mono); font-weight: 400; text-wrap: balance; }
+h2 { font-size: 1.15rem; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.lede { color: var(--muted); }
+section { display: grid; gap: 12px; }
+.scroller { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { border-top: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { font-weight: 700; color: var(--muted); font-size: .85rem; }
+.kinds { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 24px; }
+.kinds div { border-top: 1px solid var(--rule); padding-top: 6px; min-width: 0; }
+.kinds b { display: block; }
+
+/* ---------- 画面 ---------- */
+.fit { min-width: 640px; position: relative; overflow: hidden; background: #000; }
+.screen { width: 1280px; height: 720px; transform-origin: 0 0; position: absolute; top: 0; left: 0; overflow: hidden;
+  display: grid; grid-template-rows: 20px 1fr; background: var(--dwm-norm-bg); }
+.screen * { box-sizing: border-box; }
+
+.bar { display: flex; background: var(--dwm-norm-bg); color: var(--dwm-norm-fg); font: 15px/20px var(--vm-mono); white-space: nowrap; }
+.bar .tag { padding: 0 6px; position: relative; }
+.bar .tag.on { background: var(--dwm-sel-bg); color: var(--dwm-sel-fg); }
+.bar .tag.occ::before { content: ""; position: absolute; left: 1px; top: 1px; width: 4px; height: 4px; background: currentColor; }
+.bar .lt { padding: 0 8px; }
+.bar .title { flex: 1; background: var(--dwm-sel-bg); color: var(--dwm-sel-fg); padding: 0 8px; overflow: hidden; }
+.bar .status { padding: 0 8px; display: flex; gap: 10px; align-items: center; font-size: 13px; }
+.bar .status span { display: inline-flex; gap: 4px; align-items: center; }
+.bar .rec { color: var(--rec); }
+.ico { width: 12px; height: 12px; display: block; }
+.ico rect { fill: currentColor; }
+
+.tile { display: grid; grid-template-columns: 55% 45%; grid-template-rows: 54% 46%; min-height: 0; }
+.w { border: 1px solid var(--dwm-norm-border); min-width: 0; min-height: 0; overflow: hidden; position: relative; }
+.w.focus { border-color: var(--dwm-sel-bg); }
+.w.master { grid-row: 1 / 3; }
+
+/* カメラ（OpenCV の窓。映像の上の文字は Hershey 風の細い線の書体の代わりに、細い等幅で仮置き） */
+.cam { position: absolute; inset: 0; background: var(--cam-bg); color: #f2f2f2; }
+.cam .frame { position: absolute; inset: 0; display: grid; place-items: center;
+  background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(255,255,255,.035) 16px 32px); }
+.cam .frame span { font: 14px var(--vm-ja); color: #9a9a9a; border: 1px dashed #666; padding: 10px 22px; }
+.cam .hud { position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; font: 13px var(--vm-mono); }
+.cam .hud .rec { color: var(--rec); }
+.cam .lm { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.cam .subs { position: absolute; left: 0; right: 0; bottom: 176px; display: grid; gap: 4px; justify-items: center; font: 17px/1.5 var(--vm-ja); }
+.cam .subs div { background: rgba(0,0,0,.72); padding: 1px 8px; }
+.cam .subs .blocks { font-family: var(--vm-sans); letter-spacing: 1px; }
+.cam .subs .meta { color: #a8a8a8; font: 13px var(--vm-mono); }
+
+/* ELAN 風の段の窓（Java Swing の見た目に寄せる） */
+.elan { position: absolute; inset: 0; background: var(--swing-face); color: var(--swing-text); font: 12px var(--vm-sans); display: grid; grid-template-rows: auto auto 1fr; }
+.elan .menu { display: flex; gap: 14px; padding: 3px 8px; border-bottom: 1px solid #c4c4c4; }
+.elan .wave { height: 54px; background: #fff; border-bottom: 1px solid #c4c4c4; position: relative; }
+.elan .wave canvas { width: 100%; height: 100%; display: block; }
+.elan .tiers { display: grid; grid-template-columns: 118px 1fr; align-content: start; }
+.elan .ruler { grid-column: 2; height: 18px; border-bottom: 1px solid #c4c4c4; position: relative; font-size: 10px; color: #555; }
+.elan .ruler span { position: absolute; top: 2px; }
+.elan .name { padding: 0 6px; height: 30px; line-height: 30px; border-bottom: 1px solid #d6d6d6; border-right: 1px solid #c4c4c4; background: #e6e6e6; overflow: hidden; white-space: nowrap; }
+.elan .name.child { padding-left: 16px; color: #555; }
+.elan .row { height: 30px; border-bottom: 1px solid #d6d6d6; position: relative; background: #fff; }
+.elan .ann { position: absolute; top: 4px; height: 22px; border: 1px solid var(--swing-dark); background: var(--swing-sel); padding: 0 4px; line-height: 20px; overflow: hidden; white-space: nowrap; font-size: 11px; }
+.elan .ann.empty { background: #fff; }
+.elan .cursor { position: absolute; top: 0; bottom: 0; width: 1px; background: #d22; }
+
+.term { position: absolute; inset: 0; background: var(--st-bg); color: var(--st-fg); font: 12px/15px var(--vm-term); padding: 2px; white-space: pre; overflow: hidden; }
+.term .p { color: var(--st-green); }
+.term .d { color: var(--st-blue); }
+
+/* ---------- 仮想マシンの外: 内省、通信、注釈 ---------- */
+.mind { position: absolute; left: 0; right: 0; bottom: 0; height: 158px; background: var(--mind-bg); color: var(--mind-fg);
+  font: 18px/1.85 var(--mind-font); padding: 16px 56px 0 40px; border-top: 1px solid #3a3a3a; }
+.mind .who { font: 12px var(--vm-ja); color: var(--mind-dim); letter-spacing: .08em; margin-bottom: 2px; }
+.mind .next { position: absolute; right: 22px; bottom: 16px; font: 13px var(--vm-ja); color: var(--mind-dim); }
+.t { font: inherit; color: var(--mind-term); background: none; border: 0; padding: 0; cursor: pointer;
+  text-decoration: underline dotted; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.t:focus-visible { outline: 1px solid var(--mind-term); outline-offset: 2px; }
+
+.comms { position: absolute; left: 14px; top: 52px; display: grid; gap: 6px; max-width: 560px; }
+.comm { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; background: var(--comm-bg); color: var(--comm-fg);
+  padding: 6px 12px 6px 6px; font: 14px/1.5 var(--vm-ja); border-left: 2px solid #777; }
+.comm .badge { width: 34px; height: 42px; background: #8d9095; display: grid; place-items: center; font: 9px var(--vm-ja); color: #e8e8e8; }
+.comm .from { display: flex; gap: 6px; align-items: center; font-size: 11px; color: #9a9a9a; }
+
+.pop { position: absolute; z-index: 5; width: 380px; box-shadow: 0 2px 0 rgba(0,0,0,.35); }
+.pop[hidden] { display: none; }
+.pop .head { display: flex; justify-content: space-between; gap: 8px; font: 11px var(--vm-ja); letter-spacing: .06em; padding: 6px 12px 4px; }
+.pop .close { font: 12px var(--vm-ja); background: none; border: 0; color: inherit; cursor: pointer; padding: 0 2px; }
+.pop .bodytext { padding: 4px 14px 12px; }
+/* 一回だけの思考: 内省の続き */
+.pop.thought { background: #121212; color: var(--mind-fg); border: 1px solid #4a4a4a; font: 15px/1.8 var(--mind-font); }
+.pop.thought .head { color: var(--mind-dim); }
+/* 学部のノート: 罫線のノート（6mm 罫のキャンパスノート相当） */
+.pop.note { background-color: var(--note-paper); color: var(--note-ink); border: 1px solid #b9bcc2; font: 14px/24px var(--vm-ja);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 23px, var(--note-rule) 23px 24px); background-position: 0 30px; }
+.pop.note .head { color: #6b7077; background: var(--note-paper); border-bottom: 1px solid #b9bcc2; }
+.pop.note .add { color: var(--note-red); }
+.pop.note .t { color: #2f5d8a; text-decoration-color: #2f5d8a; }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<main>
+  <header>
+    <h1>hjartablod-ormsins 面接画面</h1>
+    <p class="lede">1日目、最初の聞き取りの途中。字幕が音節の伏せ字に切り替わった直後を想定した見本。文章はすべて仮置き。内省の中の色の付いた語は、クリックかホバーで開く。</p>
+  </header>
+
+  <section aria-labelledby="h-screen">
+    <h2 id="h-screen">画面</h2>
+    <div class="scroller">
+      <div class="fit" id="fit">
+        <div class="screen" id="screen">
+          <div class="bar">
+            <span class="tag on occ">1</span><span class="tag">2</span><span class="tag">3</span><span class="tag">4</span><span class="tag">5</span><span class="tag">6</span><span class="tag">7</span><span class="tag">8</span><span class="tag">9</span>
+            <span class="lt">[]=</span>
+            <span class="title">recorder.py - cam0 (crop 704x700)</span>
+            <span class="status">
+              <span class="rec">{{ICON_cam}}REC 00:14:32</span>
+              <span>{{ICON_mic}}-18dB</span>
+              <span>{{ICON_gpu}}38% 6.1/16.0G</span>
+              <span>{{ICON_usb}}ENG-0412</span>
+              <span>{{ICON_netoff}}OFFLINE</span>
+              <span>2026-10-15 14:32</span>
+            </span>
+          </div>
+          <div class="tile">
+            <div class="w master focus">
+              <div class="cam">
+                <div class="frame"><span>正面カメラの映像（立ち絵。顔の周りをトリミング）</span></div>
+                <svg class="lm" viewBox="0 0 704 700" aria-hidden="true">
+                  <g fill="#ff3b30">
+                    <circle cx="318" cy="268" r="2"/><circle cx="386" cy="268" r="2"/>
+                    <circle cx="352" cy="312" r="2"/><circle cx="330" cy="342" r="2"/><circle cx="374" cy="342" r="2"/>
+                  </g>
+                  <g stroke="#e0e0e0" stroke-width="1" fill="none" opacity=".8">
+                    <circle cx="318" cy="268" r="6"/><circle cx="386" cy="268" r="6"/>
+                  </g>
+                </svg>
+                <div class="hud"><span><span class="rec">● REC</span> cam0</span><span>00:14:32:07</span></div>
+                <div class="subs">
+                  <div>SPEAKER_00: もう一度、お願いできますか。</div>
+                  <div class="blocks">SPEAKER_01: ████ ██ █████</div>
+                  <div class="meta">[syllables 4 2 5  nuclei conf 0.71]</div>
+                </div>
+              </div>
+            </div>
+            <div class="w">
+              <div class="elan">
+                <div class="menu"><span>File</span><span>Edit</span><span>Annotation</span><span>Tier</span><span>Type</span><span>Search</span><span>View</span><span>Options</span><span>Window</span><span>Help</span></div>
+                <div class="wave"><canvas width="572" height="54" id="wave"></canvas></div>
+                <div class="tiers">
+                  <div></div>
+                  <div class="ruler"><span style="left:2%">00:14:20</span><span style="left:34%">00:14:24</span><span style="left:66%">00:14:28</span><div class="cursor" style="left:94%"></div></div>
+                  <div class="name">SPEAKER_00</div>
+                  <div class="row"><div class="ann" style="left:4%;width:30%">繰り返してもらえますか</div><div class="ann" style="left:70%;width:22%">もう一度、お願い…</div><div class="cursor" style="left:94%"></div></div>
+                  <div class="name">SPEAKER_01</div>
+                  <div class="row"><div class="ann empty" style="left:37%;width:30%"></div><div class="ann empty" style="left:93%;width:7%"></div><div class="cursor" style="left:94%"></div></div>
+                  <div class="name child">syll (auto)</div>
+                  <div class="row"><div class="ann" style="left:37%;width:30%">████ ██ █████</div><div class="ann" style="left:93%;width:7%">██</div><div class="cursor" style="left:94%"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="w">
+              <div class="term"><span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ udisksctl mount -b /dev/sdb1
+Mounted /dev/sdb1 at /media/analyst/ENG-0412
+<span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ pip install /media/analyst/ENG-0412/syllable_blocks-0.1.0.tar.gz
+Processing /media/analyst/ENG-0412/syllable_blocks-0.1.0.tar.gz
+Successfully installed syllable-blocks-0.1.0
+<span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ syllable-blocks --source cam0 --tier syll
+nuclei: silence threshold -25 dB, min dip 2 dB, min pause 0.3 s
+replacing ASR captions for SPEAKER_01 with syllable blocks
+█</div>
+            </div>
+          </div>
+
+          <div class="comms" aria-label="イヤホン越しの通信">
+            <div class="comm"><div class="badge">写真</div><div><div class="from">{{ICON_ear}}エンジニア（別室）</div>閾値は初期値のままだ。数え間違いは仕様だと思ってくれ。</div></div>
+            <div class="comm"><div class="badge">写真</div><div><div class="from">{{ICON_ear}}リーダー（観察室）</div>両手、胸の前で組んだまま。三回目。</div></div>
+          </div>
+
+          <div class="mind" id="mind">
+            <div class="who">内省</div>
+            <p>四つ、二つ、五つ。さっきの発話と同じ並びだ。同じ文を繰り返しているのなら、<button class="t" data-pop="p-minpair">最小対</button>を探す足場になる。ただ、語頭の破裂音に息が混じっているのかどうか、私の耳では決めきれない。<button class="t" data-pop="p-asp">有気音</button>の区別は、日本語の耳には残りにくい。</p>
+            <span class="next">▼</span>
+          </div>
+
+          <div class="pop thought" id="p-minpair" role="dialog" aria-label="最小対" hidden>
+            <div class="head"><span>思考</span><button class="close" data-close>×</button></div>
+            <div class="bodytext">1か所だけ音が違い、意味も違う2語の組。日本語なら「かき」と「かぎ」。違いが意味を分けるかどうかを確かめる、いちばん素朴で、いちばん確かな方法だ。もっとも、相手の言葉の意味がまだ分からない以上、「意味が違う」ことを確かめる手段も、まだない。</div>
+          </div>
+
+          <div class="pop note" id="p-asp" role="dialog" aria-label="有気音" hidden>
+            <div class="head"><span>言語学概論ノート　第4回　音声学（2）</span><button class="close" data-close>×</button></div>
+            <div class="bodytext">有気音: 破裂のあとに息が続く音。[pʰ] のように右肩に小さな h を書く。英語の pin の p は有気、spin の p は無気。英語では意味を区別しない（<button class="t" data-pop="p-allo">異音</button>）。<br><span class="add">（追記）韓国語、ヒンディー語、タイ語では意味を区別する。学部の私は、英語の例しか書いていない。</span></div>
+          </div>
+
+          <div class="pop note" id="p-allo" role="dialog" aria-label="異音" hidden>
+            <div class="head"><span>言語学概論ノート　第5回　音韻論（1）</span><button class="close" data-close>×</button></div>
+            <div class="bodytext">異音: 同じ音素の、環境による変種。話者はふつう違いに気づかない。<br><span class="add">（追記）「気づかない」のは、話者の母語での話。</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-kinds">
+    <h2 id="h-kinds">語の掘り下げの3種類</h2>
+    <div class="kinds">
+      <div><b>思考（一回だけ）</b>その場面の内省の続き。書体と色は内省と同じ。台本（ink）の中に、その場面専用に書く。</div>
+      <div><b>学部のノート（辞書）</b>主人公が学部時代に取った言語学概論のノート。一度書けば何度でも出せる。若い頃の記述と、今の主人公の赤字の追記が並ぶ。古い記述そのものが、主人公の素朴な概念の出どころになる。</div>
+      <div><b>通信（イヤホン越し）</b>観察室のリーダーと、別室のエンジニアの声。語に結びつけず、場面の状況で出る。入館証の写真の欄は仮置き。リーダーの通信は、進捗の管理とヒントの役も兼ねられる。</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-cost">
+    <h2 id="h-cost">費用の見積もり</h2>
+    <p class="prose">仕組みは安い。高いのは文章。</p>
+    <div class="scroller">
+      <table>
+        <thead><tr><th>項目</th><th>中身</th><th>費用の目安</th></tr></thead>
+        <tbody>
+          <tr><td>仕組み</td><td>台本の中の印（例: <code>[[有気音]]</code>）を読み取り、語を押せるようにする。吹き出しの位置合わせ（Floating UI）、入れ子、閉じる操作、タップ操作</td><td>Claude の作業で1日弱。一度作れば、種類が増えても大きくは増えない</td></tr>
+          <tr><td>学部のノート</td><td>語ごとの項目。若い頃の記述と追記</td><td>1項目 100〜300字。第1話で 20〜40項目なら 2,000〜12,000字。2話以降は使い回せる</td></tr>
+          <tr><td>思考</td><td>場面ごとの掘り下げ</td><td>1か所 100〜300字。場面の数だけ増える。一番高くつくので、要所に絞る</td></tr>
+          <tr><td>通信</td><td>状況に応じた短い台詞と、出る条件</td><td>1行 20〜60字。数は多くなりがちだが1つずつは安い。条件は ink で書ける</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var fit = document.getElementById('fit'), screen = document.getElementById('screen');
+  var scale = 1;
+  function resize() { scale = fit.clientWidth / 1280; screen.style.transform = 'scale(' + scale + ')'; fit.style.height = (720 * scale) + 'px'; }
+  resize(); window.addEventListener('resize', resize);
+
+  // 吹き出し: 押した語の上に開く。吹き出しの中の語を押すと、入れ子で開く
+  var hoverable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  function place(pop, btn) {
+    var sr = screen.getBoundingClientRect(), br = btn.getBoundingClientRect();
+    var x = (br.left - sr.left) / scale, y = (br.top - sr.top) / scale;
+    pop.hidden = false;
+    var w = pop.offsetWidth, h = pop.offsetHeight, left, top;
+    var parent = btn.closest('.pop');
+    if (parent) {
+      // 入れ子は親の吹き出しの横に開く（重ならないように）
+      var pl = parseFloat(parent.style.left), pw = parent.offsetWidth;
+      left = pl + pw + 8 + w <= 1272 ? pl + pw + 8 : pl - w - 8;
+      top = parseFloat(parent.style.top) + parent.offsetHeight - h;
+    } else {
+      // 読んでいる内省の行を隠さないよう、内省の帯のすぐ上に開く
+      left = Math.min(Math.max(8, x - 24), 1280 - w - 8);
+      top = 720 - document.getElementById('mind').offsetHeight - h - 8;
+    }
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  }
+  function closeFrom(pop) {
+    // pop と、その中から開いた吹き出しを閉じる
+    pop.hidden = true;
+    pop.querySelectorAll('[data-pop]').forEach(function (b) { var c = document.getElementById(b.dataset.pop); if (c && !c.hidden) closeFrom(c); });
+  }
+  function toggle(btn, force) {
+    var pop = document.getElementById(btn.dataset.pop);
+    if (!pop) return;
+    if (force === false || (force === undefined && !pop.hidden)) { closeFrom(pop); return; }
+    // 同じ階層のほかの吹き出しを閉じる
+    var parentPop = btn.closest('.pop');
+    var scope = parentPop || document.getElementById('mind');
+    scope.querySelectorAll('[data-pop]').forEach(function (b) {
+      if (b !== btn) { var other = document.getElementById(b.dataset.pop); if (other && !other.hidden) closeFrom(other); }
+    });
+    place(pop, btn);
+  }
+  document.querySelectorAll('.screen [data-pop]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) { e.stopPropagation(); btn.dataset.pinned = btn.dataset.pinned ? '' : '1'; toggle(btn, btn.dataset.pinned ? true : false); });
+    if (hoverable) {
+      btn.addEventListener('mouseenter', function () { toggle(btn, true); });
+    }
+  });
+  document.querySelectorAll('.screen [data-close]').forEach(function (b) {
+    b.addEventListener('click', function (e) { e.stopPropagation(); var pop = b.closest('.pop'); closeFrom(pop);
+      document.querySelectorAll('[data-pop="' + pop.id + '"]').forEach(function (x) { x.dataset.pinned = ''; }); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') document.querySelectorAll('.screen .pop').forEach(function (p) { p.hidden = true; });
+  });
+
+  // 最初は、ノートとその中の入れ子を開いた状態で見せる
+  var asp = document.querySelector('[data-pop="p-asp"]');
+  asp.dataset.pinned = '1'; toggle(asp, true);
+  var allo = document.querySelector('[data-pop="p-allo"]');
+  allo.dataset.pinned = '1'; toggle(allo, true);
+
+  // 波形（固定の式で作った仮のもの）
+  var cv = document.getElementById('wave'), ctx = cv.getContext('2d');
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.strokeStyle = '#2a6f2a'; ctx.beginPath();
+  for (var x = 0; x < cv.width; x++) {
+    var t = x / cv.width, env = 0;
+    if (t > .37 && t < .67) env = .8 * Math.abs(Math.sin((t - .37) * 34));
+    if (t > .04 && t < .34) env = .45 * Math.abs(Math.sin((t - .04) * 41));
+    if (t > .7 && t < .92) env = .4 * Math.abs(Math.sin((t - .7) * 47));
+    if (t > .93) env = .7 * Math.abs(Math.sin((t - .93) * 60));
+    var a = env * (cv.height / 2 - 3) * (0.55 + 0.45 * Math.sin(x * 1.7));
+    ctx.moveTo(x + .5, cv.height / 2 - a); ctx.lineTo(x + .5, cv.height / 2 + a);
+  }
+  ctx.stroke();
+  ctx.fillStyle = '#d22'; ctx.fillRect(Math.round(cv.width * .94), 0, 1, cv.height);
+})();
+</script>
