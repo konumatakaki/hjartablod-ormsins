@@ -20,6 +20,7 @@
   --vm-sans: "VM DejaVu Sans", "Noto Sans JP", sans-serif;   /* Java の Dialog 書体は Ubuntu では DejaVu Sans になる */
   --vm-ja: "Noto Sans JP", sans-serif;
   --dwm-norm-bg: #222222; --dwm-norm-fg: #bbbbbb; --dwm-norm-border: #444444;
+  --root-bg: #4d4d4d;   /* xsetroot -solid gray30（エンジニアの .xinitrc） */
   --dwm-sel-bg: #005577; --dwm-sel-fg: #eeeeee;
   --st-bg: #000000; --st-fg: #e5e5e5; --st-green: #00cd00; --st-blue: #5c5cff;
   --cam-bg: #262626; --rec: #e0201b;
@@ -53,11 +54,15 @@ th { font-weight: 700; color: var(--muted); font-size: .85rem; }
 .kinds { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 24px; }
 .kinds div { border-top: 1px solid var(--rule); padding-top: 6px; min-width: 0; }
 .kinds b { display: block; }
+.modes { display: flex; flex-wrap: wrap; gap: 8px; }
+.modes button { font: 14px var(--font-body); padding: 4px 12px; border: 1px solid var(--rule); background: var(--panel); color: var(--fg); cursor: pointer; }
+.modes button[aria-pressed="true"] { border-color: var(--fg); font-weight: 700; }
+.modes button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 
 /* ---------- 画面 ---------- */
 .fit { min-width: 640px; position: relative; overflow: hidden; background: #000; }
 .screen { width: 1280px; height: 720px; transform-origin: 0 0; position: absolute; top: 0; left: 0; overflow: hidden;
-  display: grid; grid-template-rows: 20px 1fr; background: var(--dwm-norm-bg); }
+  display: grid; grid-template-rows: 20px 1fr; background: var(--root-bg); }
 .screen * { box-sizing: border-box; }
 
 .bar { display: flex; background: var(--dwm-norm-bg); color: var(--dwm-norm-fg); font: 15px/20px var(--vm-mono); white-space: nowrap; }
@@ -72,8 +77,8 @@ th { font-weight: 700; color: var(--muted); font-size: .85rem; }
 .ico { width: 12px; height: 12px; display: block; }
 .ico rect { fill: currentColor; }
 
-.tile { display: grid; grid-template-columns: 55% 45%; grid-template-rows: 54% 46%; min-height: 0; }
-.w { border: 1px solid var(--dwm-norm-border); min-width: 0; min-height: 0; overflow: hidden; position: relative; }
+.tile { display: grid; grid-template-columns: 55fr 45fr; grid-template-rows: 54fr 46fr; gap: 6px; padding: 6px; min-height: 0; }
+.w { border: 2px solid var(--dwm-norm-border); min-width: 0; min-height: 0; overflow: hidden; position: relative; }
 .w.focus { border-color: var(--dwm-sel-bg); }
 .w.master { grid-row: 1 / 3; }
 
@@ -85,7 +90,7 @@ th { font-weight: 700; color: var(--muted); font-size: .85rem; }
 .cam .hud { position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; font: 13px var(--vm-mono); }
 .cam .hud .rec { color: var(--rec); }
 .cam .lm { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
-.cam .subs { position: absolute; left: 0; right: 0; bottom: 176px; display: grid; gap: 4px; justify-items: center; font: 17px/1.5 var(--vm-ja); }
+.cam .subs { position: absolute; left: 0; right: 0; bottom: 170px; display: grid; gap: 4px; justify-items: center; font: 17px/1.5 var(--vm-ja); }
 .cam .subs div { background: rgba(0,0,0,.72); padding: 1px 8px; }
 .cam .subs .blocks { font-family: var(--vm-sans); letter-spacing: 1px; }
 .cam .subs .meta { color: #a8a8a8; font: 13px var(--vm-mono); }
@@ -113,6 +118,15 @@ th { font-weight: 700; color: var(--muted); font-size: .85rem; }
 .mind { position: absolute; left: 0; right: 0; bottom: 0; height: 158px; background: var(--mind-bg); color: var(--mind-fg);
   font: 18px/1.85 var(--mind-font); padding: 16px 56px 0 40px; border-top: 1px solid #3a3a3a; }
 .mind .who { font: 12px var(--vm-ja); color: var(--mind-dim); letter-spacing: .08em; margin-bottom: 2px; }
+.mind[data-state="collapsed"] { height: 34px; padding-top: 5px; }
+.mind[data-state="collapsed"] .who, .mind[data-state="collapsed"] .memo { display: none; }
+.mind[data-state="collapsed"] .line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px; color: var(--mind-dim); }
+.mind[data-state="collapsed"] .line .t { color: var(--mind-dim); text-decoration: none; }
+.mind[data-state="memo"] .line { display: none; }
+.mind:not([data-state="memo"]) .memo { display: none; }
+.mind .memo { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 32px; font: 15px/1.7 var(--mind-font); }
+.mind .memo b { font: 12px var(--vm-ja); color: var(--mind-dim); letter-spacing: .08em; display: block; }
+.mind .memo ul { margin: 0; padding-left: 1.1em; }
 .mind .next { position: absolute; right: 22px; bottom: 16px; font: 13px var(--vm-ja); color: var(--mind-dim); }
 .t { font: inherit; color: var(--mind-term); background: none; border: 0; padding: 0; cursor: pointer;
   text-decoration: underline dotted; text-underline-offset: 4px; text-decoration-thickness: 1px; }
@@ -138,6 +152,28 @@ th { font-weight: 700; color: var(--muted); font-size: .85rem; }
 .pop.note .head { color: #6b7077; background: var(--note-paper); border-bottom: 1px solid #b9bcc2; }
 .pop.note .add { color: var(--note-red); }
 .pop.note .t { color: #2f5d8a; text-decoration-color: #2f5d8a; }
+.pop .open { font: 12px var(--vm-ja); background: none; border: 0; padding: 0; color: #2f5d8a; cursor: pointer; text-decoration: underline; }
+
+/* ノートを開いた状態: 見開き */
+.nb { position: absolute; inset: 40px 70px 52px; z-index: 8; display: grid; grid-template-columns: 150px 1fr 1fr; background: #1b1b1b; border: 1px solid #555; }
+.nb[hidden] { display: none; }
+.nb .idx { background: #1b1b1b; color: #bdbdbd; font: 12px/1.5 var(--vm-ja); padding: 12px 8px; display: grid; align-content: start; gap: 2px; overflow: hidden; }
+.nb .idx b { color: #8a8a8a; font-weight: 400; letter-spacing: .08em; margin-bottom: 6px; }
+.nb .idx button { all: unset; cursor: pointer; padding: 1px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nb .idx button[aria-current="true"] { background: #3a3a3a; color: #fff; }
+.nb .idx button:disabled { color: #5d5d5d; cursor: default; }
+.nb .page { background-color: var(--note-paper); color: var(--note-ink); font: 14px/24px var(--vm-ja); padding: 30px 24px 16px 40px; position: relative;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 23px, var(--note-rule) 23px 24px); background-position: 0 6px; overflow: hidden; }
+.nb .page + .page { border-left: 1px solid #c7c9cd; }
+.nb .page::before { content: ""; position: absolute; left: 28px; top: 0; bottom: 0; width: 1px; background: #e7b8b8; }
+.nb .page h3 { font: 700 15px/24px var(--vm-ja); margin: 0; }
+.nb .page .date { position: absolute; right: 20px; top: 6px; font: 11px var(--vm-ja); color: #6b7077; }
+.nb .page p { margin: 0; }
+.nb .page .add { color: var(--note-red); }
+.nb .page table { border-collapse: collapse; font: 12px/22px var(--vm-ja); margin: 1px 0; }
+.nb .page td, .nb .page th { border: 1px solid #9aa3ad; padding: 0 6px; text-align: center; font-weight: 400; }
+.nb .page .ipa { font-family: var(--vm-sans); }
+.nb .close { position: absolute; right: 8px; top: -24px; font: 12px var(--vm-ja); color: #ddd; background: #1b1b1b; border: 1px solid #555; padding: 1px 10px; cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
@@ -221,10 +257,21 @@ replacing ASR captions for SPEAKER_01 with syllable blocks
             <div class="comm"><div class="badge">写真</div><div><div class="from">{{ICON_ear}}リーダー（観察室）</div>両手、胸の前で組んだまま。三回目。</div></div>
           </div>
 
-          <div class="mind" id="mind">
+          <div class="mind" id="mind" data-state="open">
             <div class="who">内省</div>
-            <p>四つ、二つ、五つ。さっきの発話と同じ並びだ。同じ文を繰り返しているのなら、<button class="t" data-pop="p-minpair">最小対</button>を探す足場になる。ただ、語頭の破裂音に息が混じっているのかどうか、私の耳では決めきれない。<button class="t" data-pop="p-asp">有気音</button>の区別は、日本語の耳には残りにくい。</p>
+            <div class="memo">
+              <div><b>いまの仮説</b><ul><li>同じ文を繰り返している（音節の並び 4・2・5 が一致）</li><li>語頭の破裂音に、息の有無の区別がある？（未確認）</li></ul></div>
+              <div><b>次に試すこと</b><ul><li>絵カードを1枚ずつ見せ、最初の音節が変わるか見る</li><li>語頭だけを切り出して、波形を並べる</li></ul></div>
+            </div>
+            <p class="line">四つ、二つ、五つ。さっきの発話と同じ並びだ。同じ文を繰り返しているのなら、<button class="t" data-pop="p-minpair">最小対</button>を探す足場になる。ただ、語頭の破裂音に息が混じっているのかどうか、私の耳では決めきれない。<button class="t" data-pop="p-asp">有気音</button>の区別は、日本語の耳には残りにくい。</p>
             <span class="next">▼</span>
+          </div>
+
+          <div class="nb" id="nb" role="dialog" aria-label="言語学概論ノート" hidden>
+            <button class="close" data-nbclose>閉じる ×</button>
+            <div class="idx" id="nb-idx"><b>言語学概論</b></div>
+            <div class="page" id="nb-left"></div>
+            <div class="page" id="nb-right"></div>
           </div>
 
           <div class="pop thought" id="p-minpair" role="dialog" aria-label="最小対" hidden>
@@ -233,24 +280,34 @@ replacing ASR captions for SPEAKER_01 with syllable blocks
           </div>
 
           <div class="pop note" id="p-asp" role="dialog" aria-label="有気音" hidden>
-            <div class="head"><span>言語学概論ノート　第4回　音声学（2）</span><button class="close" data-close>×</button></div>
-            <div class="bodytext">有気音: 破裂のあとに息が続く音。[pʰ] のように右肩に小さな h を書く。英語の pin の p は有気、spin の p は無気。英語では意味を区別しない（<button class="t" data-pop="p-allo">異音</button>）。<br><span class="add">（追記）韓国語、ヒンディー語、タイ語では意味を区別する。学部の私は、英語の例しか書いていない。</span></div>
+            <div class="head"><span>言語学概論ノート　第3回　音声学（2）</span><button class="close" data-close>×</button></div>
+            <div class="bodytext">有気音: 破裂のあとに息が続く音。[pʰ] のように右肩に小さな h を書く。英語の pin の p は有気、spin の p は無気。英語では意味を区別しない（<button class="t" data-pop="p-allo">異音</button>）。<br><span class="add">（追記）韓国語、ヒンディー語、タイ語では意味を区別する。学部の私は、英語の例しか書いていない。</span><br><button class="open" data-open="nb3">ノートを開く →</button></div>
           </div>
 
           <div class="pop note" id="p-allo" role="dialog" aria-label="異音" hidden>
             <div class="head"><span>言語学概論ノート　第5回　音韻論（1）</span><button class="close" data-close>×</button></div>
-            <div class="bodytext">異音: 同じ音素の、環境による変種。話者はふつう違いに気づかない。<br><span class="add">（追記）「気づかない」のは、話者の母語での話。</span></div>
+            <div class="bodytext">異音: 同じ音素の、環境による変種。話者はふつう違いに気づかない。<br><span class="add">（追記）「気づかない」のは、話者の母語での話。</span><br><button class="open" data-open="nb5">ノートを開く →</button></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <section aria-labelledby="h-mind">
+    <h2 id="h-mind">内省の帯の3つの状態</h2>
+    <div class="modes" role="group" aria-label="内省の帯の状態">
+      <button data-mind="open" aria-pressed="true">内省</button>
+      <button data-mind="memo" aria-pressed="false">作業メモ（待機中）</button>
+      <button data-mind="collapsed" aria-pressed="false">1行に畳む（分析中）</button>
+    </div>
+    <p class="prose">帯は消さない。新しい内省がないときは、主人公の頭の中の作業メモ（いまの仮説、次に試すこと）を出す。道具で分析している間は1行に畳む。帯は仮想マシンの上に重なっているので、畳んでも下には仮想マシンの画面が見えていて、寂しくはならない。</p>
+  </section>
+
   <section aria-labelledby="h-kinds">
     <h2 id="h-kinds">語の掘り下げの3種類</h2>
     <div class="kinds">
       <div><b>思考（一回だけ）</b>その場面の内省の続き。書体と色は内省と同じ。台本（ink）の中に、その場面専用に書く。</div>
-      <div><b>学部のノート（辞書）</b>主人公が学部時代に取った言語学概論のノート。一度書けば何度でも出せる。若い頃の記述と、今の主人公の赤字の追記が並ぶ。古い記述そのものが、主人公の素朴な概念の出どころになる。</div>
+      <div><b>学部のノート（辞書）</b>主人公が学部時代に取った言語学概論（全15回）のノート。吹き出しから「ノートを開く」で、その回の見開きが開く。一度書けば何度でも出せる。若い頃の記述と、今の主人公の赤字の追記が並ぶ。古い記述そのものが、主人公の素朴な概念の出どころになる。</div>
       <div><b>通信（イヤホン越し）</b>観察室のリーダーと、別室のエンジニアの声。語に結びつけず、場面の状況で出る。入館証の写真の欄は仮置き。リーダーの通信は、進捗の管理とヒントの役も兼ねられる。</div>
     </div>
   </section>
@@ -327,8 +384,47 @@ replacing ASR captions for SPEAKER_01 with syllable blocks
       document.querySelectorAll('[data-pop="' + pop.id + '"]').forEach(function (x) { x.dataset.pinned = ''; }); });
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') document.querySelectorAll('.screen .pop').forEach(function (p) { p.hidden = true; });
+    if (e.key === 'Escape') { document.querySelectorAll('.screen .pop').forEach(function (p) { p.hidden = true; }); document.getElementById('nb').hidden = true; }
   });
+
+  // 内省の帯の状態（ページ側のボタンで切り替え）
+  var mind = document.getElementById('mind');
+  document.querySelectorAll('[data-mind]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      mind.dataset.state = b.dataset.mind;
+      document.querySelectorAll('[data-mind]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      document.querySelectorAll('.screen .pop').forEach(function (p) { p.hidden = true; });
+    });
+  });
+
+  // ノート: シラバスの15回。中身のある回だけ開ける
+  var syllabus = ['言語学とは何か','音声学（1）声と調音','音声学（2）子音と母音','音響音声学','音韻論（1）音素','音韻論（2）音節と韻律','形態論（1）形態素','形態論（2）語の作り方と類型','統語論（1）語順と構造','統語論（2）格と一致','意味論','語用論','社会言語学','言語習得','フィールド言語学と記録'];
+  var pages = {
+    1: ['<span class="date">4月10日</span><h3>第1回　言語学とは何か</h3><p>・言語学は記述の学問。「正しい日本語」を決めるのではなく、話されている日本語を記述する。</p><p>・母語: 幼いころ、周囲の人から自然に身につけた言語。第一言語とほぼ同じ。</p><p>・母国語という言い方は避ける。「国の言葉」と「最初に身につけた言葉」は一致しないことが多い。</p><p class="add">（追記）母国語と言うべき時さえある。</p>',
+        '<p>・言語と方言の境目は、言語学だけでは決まらない。</p><p>　「言語とは陸軍と海軍を持つ方言である」（Weinreich が紹介した言葉）</p><p>・世界の言語の数: 数え方で大きく変わる。7,000前後とされることが多い。</p><p>・期末はレポート。出席は取らない、と言っていたが毎回取っている。</p>'],
+    3: ['<span class="date">4月24日</span><h3>第3回　音声学（2）子音と母音</h3><p>・破裂音: 口の中を一度閉じ、一気に開く。[p] [t] [k] [b] [d] [g]</p><p>・有気音: 破裂のあとに息が続く。[pʰ] と右肩に小さな h。</p><p>　英語の pin の p は有気、spin の p は無気。</p><p>　英語では意味を区別しない（→異音、第5回）。</p><p class="add">（追記）韓国語、ヒンディー語、タイ語では意味を区別する。学部の私は、英語の例しか書いていない。</p>',
+        '<p>・日本語話者の耳: 有気と無気の違いを、ふつう意識しない。</p><p class="add">（追記）意識しないのは、日本語では区別しなくて済むから。耳が悪いのではない。ただし、今は区別しなくて済まない。</p><table><tr><th></th><th>無声無気</th><th>無声有気</th><th>有声</th></tr><tr><td>両唇</td><td class="ipa">p</td><td class="ipa">pʰ</td><td class="ipa">b</td></tr><tr><td>歯茎</td><td class="ipa">t</td><td class="ipa">tʰ</td><td class="ipa">d</td></tr><tr><td>軟口蓋</td><td class="ipa">k</td><td class="ipa">kʰ</td><td class="ipa">g</td></tr></table><p>・精密表記 [ ] と簡略表記 / / を混ぜない。</p>'],
+    5: ['<span class="date">5月8日</span><h3>第5回　音韻論（1）音素</h3><p>・音素: 意味を区別する音の単位。/ / で書く。</p><p>・異音: 同じ音素の、環境による変種。話者はふつう違いに気づかない。</p><p class="add">（追記）「気づかない」のは、話者の母語での話。</p><p>・最小対: 1か所だけ違い、意味も違う2語。かき／かぎ。</p>',
+        '<p>・相補分布: 2つの音が決して同じ環境に現れないなら、同じ音素の異音である可能性が高い。</p><p class="add">（追記）「可能性が高い」まで。断定はしない。データが少ないうちは特に。</p><p>・音素の数え方は、分析者によって変わる。</p>']
+  };
+  var nb = document.getElementById('nb'), idx = document.getElementById('nb-idx');
+  syllabus.forEach(function (t, i) {
+    var b = document.createElement('button'); var n = i + 1;
+    b.textContent = n + '. ' + t; b.disabled = !pages[n];
+    b.addEventListener('click', function () { openNb(n); });
+    idx.appendChild(b);
+  });
+  function openNb(n) {
+    document.getElementById('nb-left').innerHTML = pages[n][0];
+    document.getElementById('nb-right').innerHTML = pages[n][1];
+    idx.querySelectorAll('button').forEach(function (b, i) { b.setAttribute('aria-current', String(i + 1 === n)); });
+    document.querySelectorAll('.screen .pop').forEach(function (p) { p.hidden = true; });
+    nb.hidden = false;
+  }
+  document.querySelectorAll('[data-open]').forEach(function (b) {
+    b.addEventListener('click', function (e) { e.stopPropagation(); openNb(Number(b.dataset.open.replace('nb', ''))); });
+  });
+  document.querySelector('[data-nbclose]').addEventListener('click', function () { nb.hidden = true; });
 
   // 最初は、ノートとその中の入れ子を開いた状態で見せる
   var asp = document.querySelector('[data-pop="p-asp"]');
