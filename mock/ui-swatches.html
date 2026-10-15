@@ -1,0 +1,292 @@
+<title>hjartablod-ormsins 外観見本</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDGothic&family=DotGothic16&display=swap">
+<style>
+/* layout: 一列の作業メモ。各見本は 16:9 の固定比率の画面で、狭い幅では見本の中だけ横スクロールする */
+:root {
+  --bg: #f3f3f1;
+  --fg: #1d1f21;
+  --muted: #5b6066;
+  --rule: #c9cbc7;
+  --panel: #ffffff;
+  --accent: #2f5d7c;
+  --font-body: "BIZ UDPGothic", "Noto Sans JP", "Hiragino Sans", sans-serif;
+  --font-mono: "DejaVu Sans Mono", "Noto Sans Mono", "BIZ UDGothic", monospace;
+
+  /* 見本の画面の中の色。画面は表示テーマに関係なく同じ見た目にする */
+  --a-bar: #222222; --a-barfg: #bbbbbb; --a-sel: #005577; --a-selfg: #eeeeee; --a-border: #444444; --a-win: #1b1b1b; --a-winfg: #c8c8c8;
+  --b-desk: #5a6b7b; --b-face: #c0c0c0; --b-hi: #ffffff; --b-sh: #808080; --b-dk: #000000; --b-title: #000080; --b-titlefg: #ffffff; --b-titleoff: #808080; --b-win: #ffffff; --b-winfg: #000000;
+  --c-desk: #3b3f44; --c-title1: #7d9fc9; --c-title2: #4f78ad; --c-titleoff1: #d6d6d3; --c-titleoff2: #b9b9b5; --c-frame: #8e8e8a; --c-panel: #2b2b2b; --c-panelfg: #d0d0d0; --c-task: #4a4a4a; --c-win: #fbfbfa; --c-winfg: #222222;
+  --term-bg: #000000; --term-fg: #c0c0c0; --term-green: #4e9a06; --term-blue: #3465a4;
+  --gr-bg: #ffffff; --gr-block: #f9fafb; --gr-line: #e5e7eb; --gr-fg: #1f2937; --gr-sub: #6b7280; --gr-primary: #f97316;
+  --cam-bg: #2a2a2a; --cam-fg: #f2f2f2; --rec: #e0201b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #17191b; --fg: #e4e5e3; --muted: #9aa0a6; --rule: #34383c; --panel: #1f2225; --accent: #8fb4cf; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #17191b; --fg: #e4e5e3; --muted: #9aa0a6; --rule: #34383c; --panel: #1f2225; --accent: #8fb4cf; color-scheme: dark; }
+
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.75;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+main { max-width: 1040px; margin-inline: auto; display: grid; gap: 40px; }
+header { display: grid; gap: 8px; max-width: 68ch; }
+h1 { font-size: 1.5rem; line-height: 1.3; margin: 0; text-wrap: balance; font-family: var(--font-mono); font-weight: 400; }
+h2 { font-size: 1.15rem; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.lede { color: var(--muted); }
+code { font-family: var(--font-mono); font-size: .9em; }
+section { display: grid; gap: 12px; }
+.label { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); letter-spacing: .04em; }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 24px; margin: 0; padding: 0; list-style: none; }
+.notes li { border-top: 1px solid var(--rule); padding-top: 6px; min-width: 0; }
+.notes b { display: block; font-size: .8rem; color: var(--muted); font-weight: 400; }
+.scroller { overflow-x: auto; }
+.common { background: var(--panel); border: 1px solid var(--rule); padding: 16px; display: grid; gap: 8px; }
+.common ul { margin: 0; padding-left: 1.2em; }
+
+/* ---------- 見本の画面（共通） ---------- */
+.scr { min-width: 720px; aspect-ratio: 16 / 9; container-type: inline-size; position: relative; overflow: hidden; font-family: var(--font-mono); }
+.scr * { box-sizing: border-box; }
+.desk { position: absolute; inset: 0; display: grid; }
+.win { display: grid; grid-template-rows: auto 1fr; min-width: 0; min-height: 0; overflow: hidden; }
+.body { min-height: 0; overflow: hidden; }
+
+.term { background: var(--term-bg); color: var(--term-fg); font-size: 1.15cqw; line-height: 1.35; padding: .5cqw .7cqw; white-space: pre; }
+.term .p { color: var(--term-green); }
+.term .d { color: var(--term-blue); }
+
+.cam { background: var(--cam-bg); color: var(--cam-fg); position: relative; }
+.cam .frame { position: absolute; inset: 0; display: grid; place-items: center; background:
+  repeating-linear-gradient(135deg, transparent 0 1.2cqw, rgba(255,255,255,.04) 1.2cqw 2.4cqw); }
+.cam .frame span { font-size: 1.3cqw; color: #9a9a9a; border: 1px dashed #6a6a6a; padding: 1cqw 2cqw; }
+.cam .hud { position: absolute; top: .8cqw; left: 1cqw; right: 1cqw; display: flex; justify-content: space-between; font-size: 1.15cqw; }
+.cam .hud .rec { color: var(--rec); }
+.cam .meter { position: absolute; right: 1cqw; top: 3cqw; bottom: 7cqw; width: .7cqw; background: linear-gradient(to top, #3fa34d 0 55%, #d8c43a 55% 80%, #333 80%); }
+.cam .subs { position: absolute; left: 0; right: 0; bottom: 1cqw; display: grid; gap: .3cqw; justify-items: center; font-size: 1.35cqw; }
+.cam .subs div { background: rgba(0,0,0,.72); padding: .15cqw .6cqw; }
+.cam .subs .meta { color: #a8a8a8; }
+
+.gr { background: var(--gr-bg); color: var(--gr-fg); font-family: "BIZ UDPGothic", sans-serif; display: grid; grid-template-rows: auto 1fr; }
+.tabs { display: flex; gap: 0; font-family: var(--font-mono); font-size: 1cqw; background: #dcdcdc; color: #333; }
+.tabs span { padding: .3cqw .8cqw; border-right: 1px solid #b5b5b5; white-space: nowrap; }
+.tabs span.on { background: var(--gr-bg); }
+.gr .page { padding: .8cqw; display: grid; gap: .6cqw; align-content: start; font-size: 1.05cqw; min-height: 0; }
+.gr .blk { background: var(--gr-block); border: 1px solid var(--gr-line); border-radius: .5cqw; padding: .5cqw .6cqw; display: grid; gap: .3cqw; }
+.gr .blk small { color: var(--gr-sub); font-size: .9cqw; }
+.gr canvas { width: 100%; height: 6cqw; display: block; }
+.gr .ipa { font-family: "Doulos SIL", "Charis SIL", "DejaVu Sans", "Noto Sans", sans-serif; font-size: 1.2cqw; }
+.gr .btn { justify-self: start; background: var(--gr-primary); color: #fff; border-radius: .4cqw; padding: .25cqw 1cqw; font-weight: 700; }
+
+/* ---------- (a) 平らで暗い最小構成 ---------- */
+.a .desk { grid-template-rows: auto 1fr; background: var(--a-win); }
+.a .bar { display: flex; align-items: stretch; background: var(--a-bar); color: var(--a-barfg); font-size: 1.15cqw; line-height: 1.7; white-space: nowrap; }
+.a .bar .tag { padding: 0 .6cqw; }
+.a .bar .tag.on { background: var(--a-sel); color: var(--a-selfg); }
+.a .bar .lt { padding: 0 .8cqw; }
+.a .bar .title { flex: 1; background: var(--a-sel); color: var(--a-selfg); padding: 0 .8cqw; overflow: hidden; text-overflow: ellipsis; }
+.a .bar .status { padding: 0 .8cqw; }
+.a .tile { display: grid; grid-template-columns: 1.5fr 1fr; grid-template-rows: 1fr 1.25fr; gap: 0; min-height: 0; }
+.a .win { border: 1px solid var(--a-border); grid-template-rows: 1fr; }
+.a .win.focus { border-color: var(--a-sel); }
+.a .camw { grid-row: 1 / 3; }
+
+/* ---------- (b) 立体の縁取りの灰色 ---------- */
+.b .desk { grid-template-rows: 1fr auto; background: var(--b-desk); font-family: "DotGothic16", var(--font-mono); }
+.b .area { position: relative; }
+.b .win { position: absolute; background: var(--b-face); padding: .25cqw;
+  border: .2cqw solid; border-color: var(--b-hi) var(--b-dk) var(--b-dk) var(--b-hi); box-shadow: inset -.15cqw -.15cqw 0 var(--b-sh); }
+.b .tb { display: flex; justify-content: space-between; align-items: center; background: var(--b-titleoff); color: var(--b-face); font-size: 1.1cqw; padding: .1cqw .4cqw; white-space: nowrap; overflow: hidden; }
+.b .win.focus .tb { background: var(--b-title); color: var(--b-titlefg); }
+.b .tb i { font-style: normal; display: flex; gap: .2cqw; }
+.b .tb i b { display: inline-grid; place-items: center; width: 1.4cqw; height: 1.2cqw; background: var(--b-face); color: var(--b-dk); font-weight: 400; font-size: .9cqw;
+  border: .12cqw solid; border-color: var(--b-hi) var(--b-dk) var(--b-dk) var(--b-hi); }
+.b .body { margin-top: .25cqw; border: .15cqw solid; border-color: var(--b-sh) var(--b-hi) var(--b-hi) var(--b-sh); }
+.b .w1 { left: 1.5%; top: 2.5%; width: 58%; height: 92%; }
+.b .w2 { left: 61%; top: 2.5%; width: 37.5%; height: 42%; }
+.b .w3 { left: 61%; top: 47%; width: 37.5%; height: 47.5%; }
+.b .task { display: flex; gap: .4cqw; align-items: center; background: var(--b-face); padding: .3cqw; font-size: 1.1cqw; border-top: .15cqw solid var(--b-hi); white-space: nowrap; }
+.b .task .bt { padding: .1cqw .7cqw; border: .15cqw solid; border-color: var(--b-hi) var(--b-dk) var(--b-dk) var(--b-hi); }
+.b .task .bt.on { border-color: var(--b-dk) var(--b-hi) var(--b-hi) var(--b-dk); background: #d4d4d4; }
+.b .task .tray { margin-left: auto; padding: .1cqw .7cqw; border: .15cqw solid; border-color: var(--b-sh) var(--b-hi) var(--b-hi) var(--b-sh); }
+
+/* ---------- (c) 2000年代の軽量デスクトップ ---------- */
+.c .desk { grid-template-rows: 1fr auto; background: var(--c-desk); font-family: "DejaVu Sans", "Noto Sans JP", "BIZ UDPGothic", sans-serif; }
+.c .area { position: relative; }
+.c .win { position: absolute; background: var(--c-win); border: 1px solid var(--c-frame); }
+.c .tb { display: flex; justify-content: space-between; align-items: center; font-size: 1.05cqw; padding: .25cqw .6cqw;
+  background: linear-gradient(var(--c-titleoff1), var(--c-titleoff2)); color: #4a4a4a; white-space: nowrap; overflow: hidden; }
+.c .win.focus .tb { background: linear-gradient(var(--c-title1), var(--c-title2)); color: #ffffff; }
+.c .tb i { font-style: normal; letter-spacing: .5cqw; }
+.c .w1 { left: 1.2%; top: 2%; width: 58.5%; height: 94%; }
+.c .w2 { left: 60.8%; top: 2%; width: 38%; height: 42.5%; }
+.c .w3 { left: 60.8%; top: 46.5%; width: 38%; height: 49.5%; }
+.c .panel { display: flex; gap: .3cqw; align-items: center; background: var(--c-panel); color: var(--c-panelfg); font-size: 1.05cqw; padding: .25cqw .4cqw; white-space: nowrap; }
+.c .panel .t { background: var(--c-task); padding: .15cqw .8cqw; border-radius: .2cqw; max-width: 22%; overflow: hidden; text-overflow: ellipsis; }
+.c .panel .t.on { background: #646464; color: #fff; }
+.c .panel .clock { margin-left: auto; padding: 0 .6cqw; }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+
+<main>
+  <header>
+    <h1>hjartablod-ormsins 外観見本</h1>
+    <p class="lede">「軽くて古い、チープな感じ」の解釈を3つ並べた。どの画面も中身は同じで、カメラの窓、端末、道具のタブを並べている。窓の中の文字は、すべて docs/machine-spec.md の設定から導いた。</p>
+  </header>
+
+  <section aria-labelledby="ha">
+    <span class="label">(a)</span>
+    <h2 id="ha">平らで暗い最小構成</h2>
+    <div class="scroller">
+      <div class="scr a" role="img" aria-label="見本 a: 上端に細いバー、タイル状に並んだ枠線だけの窓">
+        <div class="desk">
+          <div class="bar">
+            <span class="tag on">1</span><span class="tag">2</span><span class="tag">3</span><span class="tag">4</span><span class="tag">5</span>
+            <span class="lt">[]=</span>
+            <span class="title">recorder.py — cam0 1920x1080 30fps</span>
+            <span class="status">GPU 71% | VRAM 9.8/16.0G | OFFLINE | 2026-10-15 14:32</span>
+          </div>
+          <div class="tile">
+            <div class="win focus camw"><div class="body cam" data-cam></div></div>
+            <div class="win"><div class="body term" data-term></div></div>
+            <div class="win"><div class="body gr" data-gr></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="notes">
+      <li><b>系統</b>suckless の dwm など。窓に枠と題名がなく、題名は上端のバーに出る</li>
+      <li><b>アイコン</b>ほぼ不要。文字だけで成立するので、統一は簡単</li>
+      <li><b>印象</b>一番実用本位。チープというより禁欲的</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="hb">
+    <span class="label">(b)</span>
+    <h2 id="hb">立体の縁取りの灰色</h2>
+    <div class="scroller">
+      <div class="scr b" role="img" aria-label="見本 b: 灰色の立体的な枠と紺色の題名バー、下端にタスクバー">
+        <div class="desk">
+          <div class="area">
+            <div class="win focus w1"><div class="tb">recorder.py - cam0<i><b>_</b><b>□</b><b>×</b></i></div><div class="body cam" data-cam></div></div>
+            <div class="win w2"><div class="tb">analyst@hjartablod-ormsins: ~<i><b>_</b><b>□</b><b>×</b></i></div><div class="body term" data-term></div></div>
+            <div class="win w3"><div class="tb">phone-recog - Browser<i><b>_</b><b>□</b><b>×</b></i></div><div class="body gr" data-gr></div></div>
+          </div>
+          <div class="task">
+            <span class="bt">Menu</span>
+            <span class="bt on">recorder.py</span><span class="bt">analyst@hjartabl…</span><span class="bt">phone-recog</span>
+            <span class="tray">OFFLINE 14:32</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="notes">
+      <li><b>系統</b>IceWM、Motif、昔のデスクトップ。盛り上がったボタン、灰色の枠</li>
+      <li><b>アイコン</b>16×16 のドット絵が要る。1系統を選ぶか、描く</li>
+      <li><b>印象</b>一番チープで懐かしい。年代が一番はっきり出る</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="hc">
+    <span class="label">(c)</span>
+    <h2 id="hc">2000年代の軽量 Linux デスクトップ</h2>
+    <div class="scroller">
+      <div class="scr c" role="img" aria-label="見本 c: 薄いグラデーションの題名バーと、下端の暗いパネル">
+        <div class="desk">
+          <div class="area">
+            <div class="win focus w1"><div class="tb">recorder.py — cam0<i>_ □ ×</i></div><div class="body cam" data-cam></div></div>
+            <div class="win w2"><div class="tb">analyst@hjartablod-ormsins: ~<i>_ □ ×</i></div><div class="body term" data-term></div></div>
+            <div class="win w3"><div class="tb">phone-recog — Browser<i>_ □ ×</i></div><div class="body gr" data-gr></div></div>
+          </div>
+          <div class="panel">
+            <span class="t on">recorder.py — cam0</span><span class="t">analyst@hjartablod-ormsins: ~</span><span class="t">phone-recog — Browser</span>
+            <span class="clock">OFFLINE &nbsp; 14:32</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="notes">
+      <li><b>系統</b>Openbox と tint2 の組み合わせなど。題名バーに薄いグラデーション</li>
+      <li><b>アイコン</b>既存のアイコンテーマを1系統。ライセンスの確認が要る</li>
+      <li><b>印象</b>一番ふつう。チープさは控えめ</li>
+    </ul>
+  </section>
+
+  <section class="common" aria-labelledby="hd">
+    <h2 id="hd">3つに共通の中身と、その理由</h2>
+    <ul>
+      <li><code>QEMU</code> と <code>Standard PC (Q35 + ICH9, 2009)</code>: QEMU の仮想マシンの中では実際にこう読める。外の誰かが記録していることの、分かる人にだけ分かる手がかり。</li>
+      <li><code>Running on local URL:  http://127.0.0.1:7860</code> と <code>share=True</code> の案内: Gradio が起動時に実際に出す文言。オフラインでも共有リンクの案内は出る。</li>
+      <li><code>[lang: is 0.34]</code>: 音声認識の言語判定が、未知の言語をアイスランド語（言語コード is）と判定している。ホスト名と同じ言語。</li>
+      <li>MFCC の図の色: librosa の初期設定では、MFCC のように負の値を含むデータは青と赤の配色（coolwarm）で描かれる。虹色にするなら、誰かが配色を変えた理由が要る。</li>
+      <li>ユーザー名 <code>analyst</code> は仮。エンジニアが共用のアカウントとして作った、という想定。</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function () {
+  var termHTML =
+    '<span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ cat /sys/class/dmi/id/sys_vendor /sys/class/dmi/id/product_name\n' +
+    'QEMU\n' +
+    'Standard PC (Q35 + ICH9, 2009)\n' +
+    '<span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ ls sessions/\n' +
+    'session_001.wav  session_001.eaf  session_002.wav\n' +
+    '<span class="p">analyst@hjartablod-ormsins</span>:<span class="d">~</span>$ cd tools/phone-recog && python app.py\n' +
+    'Running on local URL:  http://127.0.0.1:7860\n\n' +
+    'To create a public link, set `share=True` in `launch()`.\n' +
+    '█';
+
+  var camHTML =
+    '<div class="frame"><span>正面カメラの映像（立ち絵）</span></div>' +
+    '<div class="hud"><span><span class="rec">● REC</span> cam0</span><span>00:14:32:07</span></div>' +
+    '<div class="meter"></div>' +
+    '<div class="subs">' +
+      '<div>SPEAKER_00: こんにちは。聞こえますか。</div>' +
+      '<div>SPEAKER_01: ████ ███████ ██</div>' +
+      '<div class="meta">[lang: is 0.34]</div>' +
+    '</div>';
+
+  var grHTML =
+    '<div class="tabs"><span class="on">localhost:7860</span><span>localhost:7861</span><span>localhost:8501</span></div>' +
+    '<div class="page">' +
+      '<div class="blk"><small>MFCC (n_mfcc=20) session_002.wav 00:14:28–00:14:32</small><canvas width="480" height="80"></canvas></div>' +
+      '<div class="blk"><small>phones (allosaurus, universal)</small><span class="ipa">tʰ a ʔ i n ɛ k a l u</span></div>' +
+      '<span class="btn">Submit</span>' +
+    '</div>';
+
+  document.querySelectorAll('[data-term]').forEach(function (el) { el.innerHTML = termHTML; });
+  document.querySelectorAll('[data-cam]').forEach(function (el) { el.innerHTML = camHTML; });
+  document.querySelectorAll('[data-gr]').forEach(function (el) { el.innerHTML = grHTML; });
+
+  // matplotlib の coolwarm を近似した配色で、20行の MFCC らしい図を描く（値は固定の式から作る）
+  var stops = [[59,76,192],[144,178,254],[221,221,221],[245,156,125],[180,4,38]];
+  function color(v) {
+    var x = Math.max(0, Math.min(1, v)) * (stops.length - 1);
+    var i = Math.min(stops.length - 2, Math.floor(x)), f = x - i;
+    var a = stops[i], b = stops[i + 1];
+    return 'rgb(' + Math.round(a[0] + (b[0] - a[0]) * f) + ',' + Math.round(a[1] + (b[1] - a[1]) * f) + ',' + Math.round(a[2] + (b[2] - a[2]) * f) + ')';
+  }
+  document.querySelectorAll('.gr canvas').forEach(function (cv) {
+    var ctx = cv.getContext('2d'), rows = 20, cols = 120;
+    var w = cv.width / cols, h = cv.height / rows;
+    for (var c = 0; c < cols; c++) {
+      var voiced = Math.sin(c / 7) + Math.sin(c / 3.1) > -0.4;
+      for (var r = 0; r < rows; r++) {
+        var v;
+        if (r === 0) v = voiced ? 0.92 : 0.12;
+        else v = 0.5 + (voiced ? 0.32 : 0.1) * Math.sin(c / (2 + r * 0.35) + r * 1.7) * Math.cos(r * 0.9 + c / 11) / (1 + r * 0.08);
+        ctx.fillStyle = color(v);
+        ctx.fillRect(c * w, (rows - 1 - r) * h, Math.ceil(w), Math.ceil(h));
+      }
+    }
+  });
+})();
+</script>
