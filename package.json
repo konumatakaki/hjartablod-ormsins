@@ -1,0 +1,11 @@
+{
+  "name": "hjartablod-ormsins",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:content": "node tools/check-content.mjs"
+  },
+  "devDependencies": {
+    "inkjs": "2.4.0"
+  }
+}
