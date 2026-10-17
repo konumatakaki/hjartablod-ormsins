@@ -1,0 +1,36 @@
+# 改造版の Inky（半角の | のルビを使える）を Windows 向けに組み立てる。
+# 結果は、この実行の「Artifacts」に Inky-win64-ruby として置かれる。
+# 手動で動かすときは、GitHub の Actions の画面で build-inky を選び「Run workflow」。
+name: build-inky
+on:
+  workflow_dispatch:
+  push:
+    paths: ["tools/inky/**", ".github/workflows/build-inky.yml"]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: project
+      - uses: actions/checkout@v4
+        with:
+          repository: inkle/inky
+          ref: 3d46aa92bf1572797f35d338bf75e37bb047f2e3
+          path: inky
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply ruby patch
+        working-directory: inky
+        run: git apply ../project/tools/inky/inky-ruby.patch
+      - name: Build
+        working-directory: inky/app
+        run: |
+          npm install
+          npm run build-package -- win64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Inky-win64-ruby
+          path: inky/Inky-win32-x64
+          retention-days: 90
