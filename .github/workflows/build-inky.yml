@@ -1,11 +1,16 @@
 # 改造版の Inky（半角の | のルビを使える）を Windows 向けに組み立てる。
-# 結果は、この実行の「Artifacts」に Inky-win64-ruby として置かれる。
+# 結果は GitHub Releases に「inky-ruby-<コミット>」として置かれる（ログイン不要で落とせる）。
+#   Inky-win64-ruby.zip      … 全体（初回用）
+#   Inky-ruby-app-asar.zip   … resources\app.asar だけ（更新用。全体を入れた後は、これを差し替えるだけでよい）
+# 古い inky-ruby-* のリリースは、最新の1つを残して消す。
 # 手動で動かすときは、GitHub の Actions の画面で build-inky を選び「Run workflow」。
 name: build-inky
 on:
   workflow_dispatch:
   push:
     paths: ["tools/inky/**", ".github/workflows/build-inky.yml"]
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: windows-latest
@@ -46,8 +51,31 @@ jobs:
           Copy-Item project/tools/inky/README.md inky/Inky-win32-x64/README-hjartablod.md
           Copy-Item project/licenses/Inky-MIT.txt inky/Inky-win32-x64/LICENSE-Inky.txt
           Get-ChildItem inky/Inky-win32-x64 | Select-Object Name
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Inky-win64-ruby
-          path: inky/Inky-win32-x64
-          retention-days: 90
+      - name: Zip
+        shell: pwsh
+        run: |
+          Compress-Archive -Path inky/Inky-win32-x64/* -DestinationPath Inky-win64-ruby.zip
+          New-Item -ItemType Directory -Force asar/resources | Out-Null
+          Copy-Item inky/Inky-win32-x64/resources/app.asar asar/resources/app.asar
+          Copy-Item inky/Inky-win32-x64/README-hjartablod.md asar/
+          Copy-Item inky/Inky-win32-x64/LICENSE-Inky.txt asar/
+          Compress-Archive -Path asar/* -DestinationPath Inky-ruby-app-asar.zip
+          Get-Item *.zip | Select-Object Name, Length
+      - name: Publish release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $sha = "${{ github.sha }}".Substring(0, 7)
+          $tag = "inky-ruby-$sha"
+          $notes = @"
+          改造版 Inky（半角の | のルビ対応）。inkle Ltd による公式の Inky ではありません。
+          元のソース: https://github.com/inkle/inky （コミット 3d46aa92bf1572797f35d338bf75e37bb047f2e3、MIT License, Copyright (c) 2016 inkle Ltd.）
+          変更点と組み立ての手順: tools/inky/README.md
+
+          - 初めて入れるとき: Inky-win64-ruby.zip を展開して Inky.exe を起動する。
+          - 更新するとき: Inky-ruby-app-asar.zip の resources\app.asar で、入れてある Inky の resources\app.asar を上書きする。
+          "@
+          gh release create $tag Inky-win64-ruby.zip Inky-ruby-app-asar.zip --repo ${{ github.repository }} --target ${{ github.sha }} --prerelease --title "改造版 Inky（ルビ対応） $sha" --notes $notes
+          $old = gh release list --repo ${{ github.repository }} --limit 50 --json tagName --jq '.[].tagName' | Where-Object { $_ -like "inky-ruby-*" -and $_ -ne $tag }
+          foreach ($t in $old) { gh release delete $t --repo ${{ github.repository }} --yes --cleanup-tag }

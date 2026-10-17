@@ -41,13 +41,11 @@ Inky の設定の `customInkSnippets` は、カーソルの位置に決まった
 
 **いちばん簡単な方法: 組み立て済みの改造版を落とす**
 
-GitHub Actions（`.github/workflows/build-inky.yml`）が、改造版の Inky を Windows 向けに組み立てて置いている。
+GitHub Actions（`.github/workflows/build-inky.yml`）が、改造版の Inky を Windows 向けに組み立てて、このリポジトリの「Releases」に置いている（ログイン不要）。
 
-1. GitHub のこのリポジトリの「Actions」→「build-inky」→ いちばん新しい実行を開く。
-2. 下の「Artifacts」にある `Inky-win64-ruby` を落とす（GitHub にログインしている必要がある）。
-3. 展開して、いつもの場所（`AppData\Local\Programs` など）に置き、`Inky.exe` を起動する。
-
-- 置かれたものは 90 日で消える。消えたら、Actions の画面で build-inky を選んで「Run workflow」を押せば作り直せる。`tools/inky/` を変えたときも自動で作り直される。
+- **初めて入れるとき:** 最新の「改造版 Inky（ルビ対応）」の `Inky-win64-ruby.zip`（200MB 余り）を落として展開し、いつもの場所（`AppData\Local\Programs` など）に置いて `Inky.exe` を起動する。
+- **更新するとき:** `Inky-ruby-app-asar.zip`（小さい）だけを落として、中の `resources\app.asar` で、入れてある Inky の `resources\app.asar` を上書きする。改造で変わるのはこのファイルだけ。
+- `tools/inky/` を変えると自動で作り直され、古いリリースは消える。手動で作り直すときは、Actions の画面で build-inky を選んで「Run workflow」。
 - 署名のない exe なので、初回の起動時に Windows が警告を出すことがある（「詳細情報」→「実行」）。
 
 **手で組み立てる場合**
