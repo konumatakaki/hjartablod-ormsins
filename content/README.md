@@ -59,6 +59,7 @@ Windows での手順（ファイルを置き換えるだけで済む形。用意
 3. 展開したフォルダの `app\main-process\inklecate.js` を、このリポジトリの `tools\inky\inklecate.js` で上書きする。
 4. `tools\inky\start-inky.bat` を、展開したフォルダ（`app` フォルダがある場所）に置いて、ダブルクリックする。初回だけ必要な部品を取ってくるので少し時間がかかる。2回目からはすぐ起動する。
 
+- **注意:** GitHub の「Download ZIP」で落としたソースには、コンパイラ本体（`app\main-process\ink\inklecate_win.exe` と `inkjs-compatible\inklecate_win.exe`）が入っていない（Git LFS で別に管理されているため、中身のない目印のファイルになる）。公式の Inky のリリース版の `resources\app.asar.unpacked\main-process\ink\` から同じ名前のファイルをコピーして上書きする。
 - 上書き用の `inklecate.js` は、2026年5月時点の Inky（3d46aa9）を元にしている。もっと新しい Inky に上書きすると、Inky 側の変更を消してしまうことがある。その場合は、差分（`tools\inky\inky-ruby.patch`）を当てる方法に切り替える（Git が要る）。
 - 改造の中身は、Inky の `app/main-process/inklecate.js` の1か所。2026年5月時点の Inky に当たることを確認した。
 - この作業環境では Windows 版の Inky を動かせないので、Windows での動作はまだ確かめていない。動かなかったら教えてほしい。

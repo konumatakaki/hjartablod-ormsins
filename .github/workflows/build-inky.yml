@@ -16,11 +16,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: inkle/inky
+          # inklecate（コンパイラ本体）は Git LFS で管理されているので、LFS も取ってくる
+          lfs: true
           ref: 3d46aa92bf1572797f35d338bf75e37bb047f2e3
           path: inky
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Check inklecate is a real binary (not an LFS pointer)
+        working-directory: inky
+        shell: pwsh
+        run: |
+          foreach ($f in @("app/main-process/ink/inklecate_win.exe", "app/main-process/ink/inkjs-compatible/inklecate_win.exe")) {
+            $size = (Get-Item $f).Length
+            Write-Host "$f : $size bytes"
+            if ($size -lt 100000) { throw "$f is too small (LFS pointer?)" }
+          }
       - name: Apply ruby patch
         working-directory: inky
         run: git apply ../project/tools/inky/inky-ruby.patch
