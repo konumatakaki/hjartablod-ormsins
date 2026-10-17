@@ -49,6 +49,17 @@ for (const file of readdirSync(SCRIPT_DIR).filter((f) => f.endsWith(".ink"))) {
     const speaker = line.match(/^([^\s「*+\-=~#]{1,12})「/);
     // ひらがなを含む名前（地の文の「彼女は「…」」など）は台詞とみなさない
     if (speaker && !/[\u3041-\u309f]/.test(speaker[1]) && !SPEAKERS.includes(speaker[1])) warn(`${at} 知らない話者「${speaker[1]}」`);
+    // ゲームは「名前「…」」だけの行を台詞として出す。閉じた後ろに文が続くと台詞として切り出せない
+    if (speaker && SPEAKERS.includes(speaker[1])) {
+      const body = line.replace(/\s#.*$/, "");
+      let depth = 0, end = -1;
+      for (let j = speaker[0].length - 1; j < body.length; j++) {
+        if (body[j] === "「") depth++;
+        else if (body[j] === "」" && --depth === 0) { end = j; break; }
+      }
+      if (end === -1) err(`${at} 台詞の「」が閉じていない`);
+      else if (body.slice(end + 1).trim()) warn(`${at} 台詞の」の後ろに文が続いている（台詞として表示できない。行を分ける）`);
+    }
     const opens = (line.match(/《/g) || []).length, closes = (line.match(/》/g) || []).length;
     if (opens !== closes) err(`${at} ルビの《》の数が合わない`);
     if (line.replace(/\{[^}]*\}/g, "").replace(/\\\|/g, "").includes("|")) err(`${at} ルビ以外の場所に半角の「|」がある（ink の記号として読まれる）`);
