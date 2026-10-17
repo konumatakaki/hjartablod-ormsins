@@ -39,6 +39,19 @@ ink で特別な意味を持つ記号がある。地の文で使うと、文章�
 Inky の設定の `customInkSnippets` は、カーソルの位置に決まった文字列を挿入するだけの仕組みで（Inky のソースで確認）、打った `|` を置き換えることはできない。
 そこで、Inky がコンパイルの前にファイルを書き出す箇所に、ゲームと同じ置き換えを1か所挟む改造を用意した（`tools/inky/`）。元のファイルは書き換えず、行の数も変えないので、エラーの行番号はそのまま正しい。
 
+**いちばん簡単な方法: 組み立て済みの改造版を落とす**
+
+GitHub Actions（`.github/workflows/build-inky.yml`）が、改造版の Inky を Windows 向けに組み立てて置いている。
+
+1. GitHub のこのリポジトリの「Actions」→「build-inky」→ いちばん新しい実行を開く。
+2. 下の「Artifacts」にある `Inky-win64-ruby` を落とす（GitHub にログインしている必要がある）。
+3. 展開して、いつもの場所（`AppData\Local\Programs` など）に置き、`Inky.exe` を起動する。
+
+- 置かれたものは 90 日で消える。消えたら、Actions の画面で build-inky を選んで「Run workflow」を押せば作り直せる。`tools/inky/` を変えたときも自動で作り直される。
+- 署名のない exe なので、初回の起動時に Windows が警告を出すことがある（「詳細情報」→「実行」）。
+
+**手で組み立てる場合**
+
 Windows での手順（ファイルを置き換えるだけで済む形。用意したものは `tools/inky/`）:
 
 1. Node.js（LTS 版）を入れる（インストーラーで入る）。
