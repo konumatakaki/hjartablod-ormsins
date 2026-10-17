@@ -37,22 +37,16 @@ ink で特別な意味を持つ記号がある。地の文で使うと、文章�
 ### Inky で半角の | のルビを使う（改造版の Inky）
 
 Inky の設定の `customInkSnippets` は、カーソルの位置に決まった文字列を挿入するだけの仕組みで（Inky のソースで確認）、打った `|` を置き換えることはできない。
-そこで、Inky がコンパイルの前にファイルを書き出す箇所に、ゲームと同じ置き換えを1か所挟む改造を用意した（`tools/inky-ruby.patch`）。元のファイルは書き換えず、行の数も変えないので、エラーの行番号はそのまま正しい。
+そこで、Inky がコンパイルの前にファイルを書き出す箇所に、ゲームと同じ置き換えを1か所挟む改造を用意した（`tools/inky/`）。元のファイルは書き換えず、行の数も変えないので、エラーの行番号はそのまま正しい。
 
-Windows での手順（Inky の README にある、ソースから動かす方法に改造を1つ足したもの）:
+Windows での手順（ファイルを置き換えるだけで済む形。用意したものは `tools/inky/`）:
 
-1. Node.js（LTS 版）と Git for Windows を入れる。
-2. PowerShell で:
-   ```
-   git clone https://github.com/inkle/inky.git
-   cd inky
-   git apply <このリポジトリの場所>\tools\inky-ruby.patch
-   cd app
-   npm install
-   npm start
-   ```
-3. 2回目からは `inky\app` で `npm start` だけ。
+1. Node.js（LTS 版）を入れる（インストーラーで入る）。
+2. Inky のソースを ZIP で落とす（https://github.com/inkle/inky の「Code」→「Download ZIP」）。好きな場所（たとえば `AppData\Local\Programs`）に展開する。
+3. 展開したフォルダの `app\main-process\inklecate.js` を、このリポジトリの `tools\inky\inklecate.js` で上書きする。
+4. `tools\inky\start-inky.bat` を、展開したフォルダ（`app` フォルダがある場所）に置いて、ダブルクリックする。初回だけ必要な部品を取ってくるので少し時間がかかる。2回目からはすぐ起動する。
 
+- 上書き用の `inklecate.js` は、2026年5月時点の Inky（3d46aa9）を元にしている。もっと新しい Inky に上書きすると、Inky 側の変更を消してしまうことがある。その場合は、差分（`tools\inky\inky-ruby.patch`）を当てる方法に切り替える（Git が要る）。
 - 改造の中身は、Inky の `app/main-process/inklecate.js` の1か所。2026年5月時点の Inky に当たることを確認した。
 - この作業環境では Windows 版の Inky を動かせないので、Windows での動作はまだ確かめていない。動かなかったら教えてほしい。
 - 改造版を使わない場合の代わり:
