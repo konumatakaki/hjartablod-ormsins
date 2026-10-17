@@ -15,6 +15,8 @@
 | 画面を作る | [docs/design-rules.md](docs/design-rules.md) |
 | 技術を知りたい | [docs/tech.md](docs/tech.md) |
 
+AI エージェントで作業するときの案内は [AGENTS.md](AGENTS.md)。
+
 ## 道具
 
 ```
