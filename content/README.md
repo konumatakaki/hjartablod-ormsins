@@ -34,6 +34,40 @@ ink で特別な意味を持つ記号がある。地の文で使うと、文章�
 | `\|椅子《いす》`（半角の \| にバックスラッシュ） | 使える | ink の記号を文字として使うときの書き方（エスケープ） |
 | `|椅子《いす》`（半角の \| だけ） | 使えない | ゲームと検査では、ink に渡す前に全角に置き換えている（`tools/ink-preprocess.mjs`）。Inky はこの置き換えをしないので、エラーになる。Inky で確かめたいときは `npm run export:inky` で置き換え済みのコピー（`build/inky/`）を作って開く |
 
+### Inky で半角の | のルビを使う（改造版の Inky）
+
+Inky の設定の `customInkSnippets` は、カーソルの位置に決まった文字列を挿入するだけの仕組みで（Inky のソースで確認）、打った `|` を置き換えることはできない。
+そこで、Inky がコンパイルの前にファイルを書き出す箇所に、ゲームと同じ置き換えを1か所挟む改造を用意した（`tools/inky-ruby.patch`）。元のファイルは書き換えず、行の数も変えないので、エラーの行番号はそのまま正しい。
+
+Windows での手順（Inky の README にある、ソースから動かす方法に改造を1つ足したもの）:
+
+1. Node.js（LTS 版）と Git for Windows を入れる。
+2. PowerShell で:
+   ```
+   git clone https://github.com/inkle/inky.git
+   cd inky
+   git apply <このリポジトリの場所>\tools\inky-ruby.patch
+   cd app
+   npm install
+   npm start
+   ```
+3. 2回目からは `inky\app` で `npm start` だけ。
+
+- 改造の中身は、Inky の `app/main-process/inklecate.js` の1か所。2026年5月時点の Inky に当たることを確認した。
+- この作業環境では Windows 版の Inky を動かせないので、Windows での動作はまだ確かめていない。動かなかったら教えてほしい。
+- 改造版を使わない場合の代わり:
+  - Inky の検索と置換（正規表現）で、遊ぶ前に一括で置き換える。検索 `(?<!\\)\|(?=[^|《》{}\n]+《)`、置換 `\|`
+  - `customInkSnippets` で、`\|` を挿入するショートカットを作る（例は下）
+
+```json
+{
+  "customInkSnippets": [
+    { "name": "ルビの縦棒", "ink": "\\|", "accelerator": "CmdOrCtrl+Shift+R" }
+  ]
+}
+```
+（このファイルは `content/script/main.settings.json` として置く。Inky の README の「Project settings file」の書き方）
+
 - 漢字だけの部分なら、どの書き方でも `｜` を省ける（`椅子《いす》`）。
 - Inky の右側の画面では、ルビは記号のまま（`｜椅子《いす》`）表示される。ふりがなとしての見え方は、ゲームの画面で確かめる。
 

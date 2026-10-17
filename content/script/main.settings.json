@@ -1,0 +1,5 @@
+{
+  "customInkSnippets": [
+    { "name": "ルビの縦棒（\\|）", "ink": "\\|", "accelerator": "CmdOrCtrl+Shift+R" }
+  ]
+}
