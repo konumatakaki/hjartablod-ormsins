@@ -40,6 +40,12 @@ jobs:
         run: |
           npm install
           npm run build-package -- win64
+      - name: Add notices to the package
+        shell: pwsh
+        run: |
+          Copy-Item project/tools/inky/README.md inky/Inky-win32-x64/README-hjartablod.md
+          Copy-Item project/licenses/Inky-MIT.txt inky/Inky-win32-x64/LICENSE-Inky.txt
+          Get-ChildItem inky/Inky-win32-x64 | Select-Object Name
       - uses: actions/upload-artifact@v4
         with:
           name: Inky-win64-ruby

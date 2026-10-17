@@ -48,7 +48,12 @@ def svg(name, cls, size):
 def main(template, out):
     html = pathlib.Path(template).read_text(encoding="utf-8")
     def font(m):
-        return base64.b64encode((SRC / "fonts" / (m.group(1) + ".woff2")).read_bytes()).decode()
+        # woff2 を優先し、なければ ttf（改変できない書体は元のファイルのまま置くため）
+        for ext in (".woff2", ".ttf"):
+            f = SRC / "fonts" / (m.group(1) + ext)
+            if f.exists():
+                return base64.b64encode(f.read_bytes()).decode()
+        raise FileNotFoundError(m.group(1))
     html = re.sub(r"\{\{FONT_([A-Za-z0-9_-]+)\}\}", font, html)
     html = re.sub(r"\{\{ICON_([a-z]+)\}\}", lambda m: svg(m.group(1), "ico", 12), html)
     html = re.sub(r"\{\{BIG_([a-z]+)\}\}", lambda m: svg(m.group(1), "ico big", 48), html)
