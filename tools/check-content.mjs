@@ -50,7 +50,7 @@ for (const file of readdirSync(SCRIPT_DIR).filter((f) => f.endsWith(".ink"))) {
     if (speaker && !SPEAKERS.includes(speaker[1])) warn(`${at} 知らない話者「${speaker[1]}」`);
     const opens = (line.match(/《/g) || []).length, closes = (line.match(/》/g) || []).length;
     if (opens !== closes) err(`${at} ルビの《》の数が合わない`);
-    if (line.replace(/\{[^}]*\}/g, "").includes("|")) err(`${at} ルビ以外の場所に半角の「|」がある（ink の記号として読まれる）`);
+    if (line.replace(/\{[^}]*\}/g, "").replace(/\\\|/g, "").includes("|")) err(`${at} ルビ以外の場所に半角の「|」がある（ink の記号として読まれる）`);
     if (line.includes("｜") && !/｜[^《》｜]+《[^》]+》/.test(line)) warn(`${at} 「｜」の後にルビ《》がない`);
     if ((line.match(/\[\[/g) || []).length !== (line.match(/\]\]/g) || []).length) err(`${at} 用語の [[ ]] の数が合わない`);
   });
