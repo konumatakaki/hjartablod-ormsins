@@ -6,6 +6,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { Compiler, CompilerOptions } from "inkjs/full";
 import { PosixFileHandler } from "inkjs/compiler/FileHandler/PosixFileHandler";
+import { preprocess, preprocessLine } from "./ink-preprocess.mjs";
 
 const SCRIPT_DIR = "content/script";
 const ROOT = "main.ink";
@@ -21,11 +22,16 @@ const warn = (m) => { warnings++; console.log("注意    " + m); };
 
 // 1. 翻訳
 const messages = [];
+// 読み込んだファイルの中身を、翻訳の前に下ごしらえ（ink-preprocess.mjs）する
+const files = new PosixFileHandler(SCRIPT_DIR + "/");
+const handler = {
+  ResolveInkFilename: (name) => files.ResolveInkFilename(name),
+  LoadInkFileContents: (name) => preprocess(files.LoadInkFileContents(name)),
+};
 const options = new CompilerOptions(ROOT, [], false,
-  (message, type) => messages.push({ message, type }),
-  new PosixFileHandler(SCRIPT_DIR + "/"));
+  (message, type) => messages.push({ message, type }), handler);
 try {
-  new Compiler(readFileSync(join(SCRIPT_DIR, ROOT), "utf8"), options).Compile();
+  new Compiler(preprocess(readFileSync(join(SCRIPT_DIR, ROOT), "utf8")), options).Compile();
 } catch (e) {
   if (!messages.length) messages.push({ message: String(e), type: 2 });
 }
@@ -35,7 +41,7 @@ for (const { message, type } of messages) (type === 2 ? err : warn)("ink: " + me
 for (const file of readdirSync(SCRIPT_DIR).filter((f) => f.endsWith(".ink"))) {
   readFileSync(join(SCRIPT_DIR, file), "utf8").split("\n").forEach((raw, i) => {
     const at = `${file}:${i + 1}`;
-    const line = raw.replace(/\/\/.*$/, "").trim();
+    const line = preprocessLine(raw).replace(/\/\/.*$/, "").trim();
     if (!line) return;
     for (const m of line.matchAll(/#\s*([^\s:#]+)/g)) {
       if (!TAGS.includes(m[1])) warn(`${at} 知らないタグ「#${m[1]}」`);
@@ -44,7 +50,7 @@ for (const file of readdirSync(SCRIPT_DIR).filter((f) => f.endsWith(".ink"))) {
     if (speaker && !SPEAKERS.includes(speaker[1])) warn(`${at} 知らない話者「${speaker[1]}」`);
     const opens = (line.match(/《/g) || []).length, closes = (line.match(/》/g) || []).length;
     if (opens !== closes) err(`${at} ルビの《》の数が合わない`);
-    if (line.replace(/\{[^}]*\}/g, "").includes("|")) err(`${at} 半角の「|」がある。ルビは全角の「｜」で書く`);
+    if (line.replace(/\{[^}]*\}/g, "").includes("|")) err(`${at} ルビ以外の場所に半角の「|」がある（ink の記号として読まれる）`);
     if (line.includes("｜") && !/｜[^《》｜]+《[^》]+》/.test(line)) warn(`${at} 「｜」の後にルビ《》がない`);
     if ((line.match(/\[\[/g) || []).length !== (line.match(/\]\]/g) || []).length) err(`${at} 用語の [[ ]] の数が合わない`);
   });
