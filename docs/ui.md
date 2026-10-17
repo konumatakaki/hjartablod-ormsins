@@ -122,7 +122,7 @@
 - Gradio は初期ポート 7860、Streamlit は 8501（確度高）。どちらも初期テーマのまま使われがち。
 - フォントの候補: DejaVu Sans Mono、Noto Sans Mono、Noto Sans CJK JP、IPA 用に Doulos SIL か Charis SIL。
   いずれも自由なライセンス（SIL Open Font License など）で、無料のゲームに同梱できる。
-- アイコン: Linux の既存のアイコンテーマ（GNOME の Adwaita、Papirus など）から1系統だけ選ぶ。ライセンスの確認は要る。
+- アイコン: Linux の既存のアイコンテーマ（GNOME の Adwaita、Papirus など）から1系統だけ選ぶ。ライセンスの確認は要る。→ 不採用。12×12 のドット絵を自作する（下の「アイコン」）
 
 ### リアリティの確認事項
 
@@ -149,9 +149,10 @@
 |---|---|---|
 | dwm のバー | DejaVu Sans Mono 13px | dwm の初期設定 `monospace:size=10`。Ubuntu では monospace が DejaVu Sans Mono になる |
 | 端末（st） | Liberation Mono 12px | st の初期設定 `Liberation Mono:pixelsize=12` |
-| ブラウザの中の道具（Gradio） | Source Sans Pro | Gradio 6 が書体を同梱しているので、オフラインでもこれで出る（実機で確認。当初の「既定の sans に落ちる」は誤り） |
+| ブラウザの中の道具（Gradio） | Source Sans 3（Gradio の設定上の名前は Source Sans Pro） | Gradio 6 が書体を同梱しているので、オフラインでもこれで出る（実機で確認。当初の「既定の sans に落ちる」は誤り） |
 | 日本語 | Noto Sans JP | Ubuntu の日本語書体 fonts-noto-cjk と同じ字形 |
 
+- → 解決済み: 元のファイルのまま同梱する形にした（THIRD_PARTY_NOTICES.md）。以下は当時のメモ。
 - ライセンスの注意: Liberation フォントは SIL OFL で、「Liberation」が予約書体名になっている。使う文字だけに絞った版（改変版）を配布するなら、名前を変える必要がある。最終版では、改変しない元のファイルを同梱するか、名前を変える。DejaVu は改変版の配布に名前の制約がほぼない（Bitstream Vera の名前を使わなければよい）。
 - 残る差: Linux はヒンティングで輪郭を画素に合わせるが、Mac のブラウザはしない。
 
@@ -268,7 +269,7 @@
   - 1行に畳む（分析中）: 道具を触っている間。帯は仮想マシンの上に重なっているので、畳んでも下の画面が見える。
 - 学部のノート: 吹き出しから「ノートを開く」で、その回の見開きが開く。左に15回の目次。シラバスは notes-syllabus.md。
 
-## 次の一歩の案
+## 次の一歩の案（→ すべて済み）
 
 1. マシンの設定資料を作る（文字だけ）→ machine-spec.md（下書き）。
 2. 静的なモックを作る → mock/ui-swatches.html（第2版）。

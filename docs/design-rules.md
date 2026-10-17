@@ -28,9 +28,13 @@
 |---|---|---|
 | 上端のバー | dwm 6.4 | 初期設定。配色 #222222 / #bbbbbb / #005577 / #eeeeee、書体 `monospace:size=10` |
 | 端末 | st | 初期設定。書体 `Liberation Mono:pixelsize=12`、背景は黒 |
-| 道具 | Gradio 6（ブラウザのアプリ表示） | 初期テーマ。書体は Gradio が同梱している Source Sans Pro。主ボタンは橙色で横幅いっぱい |
+| 道具 | Gradio 6（ブラウザのアプリ表示） | 初期テーマ。書体は Gradio が同梱している Source Sans 3（Gradio の設定上の名前は Source Sans Pro）。主ボタンは橙色で横幅いっぱい |
 | 録画 | 未定（OpenCV の窓なら、映像の上の文字は Hershey 書体） | 未定 |
-| 日本語 | Noto Sans CJK JP（fonts-noto-cjk） | Ubuntu の日本語書体 |
+| 日本語（仮想マシンの中） | Noto Sans CJK JP（fonts-noto-cjk）。同梱では同じ字形の Noto Sans JP | Ubuntu の日本語書体 |
+| 内省（仮想マシンの外） | Noto Serif JP | 記録されないものを、仮想マシンと違う書体で分ける |
+| 通信、ノート、UI の日本語（仮想マシンの外） | Noto Sans JP | |
+
+この表が書体の正本。見本のページの説明文に使っている BIZ UD 系の書体は、ゲームの画面には使わない。
 
 ## 3. 書体
 
@@ -46,7 +50,7 @@
 - 12×12 の1色のドット絵で自作する。既存のアイコン集は使わない。
 - 必要になった機能にだけ付ける。飾りのアイコンは置かない。
 - ただし、実在のソフトが初期設定で出すアイコン（Gradio の窓の右上の拡大・保存・共有など）は、そのソフトの一部としてそのまま残す。
-- 現在: cam（録画）、mic（音量）、gpu（使用率）、usb（道具の搬入）、netoff（切断）。
+- 現在: cam（録画）、mic（音量）、gpu（使用率）、usb（道具の搬入）、netoff（切断）、ear（イヤホン越しの通信）。定義は `mock/src/build.py`。この一覧が正本。
 
 ## 5. 色
 

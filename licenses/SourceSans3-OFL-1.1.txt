@@ -1,5 +1,6 @@
-Source Sans Pro
-Copyright 2010-2020 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+Source Sans 3
+© 2023 Adobe (http://www.adobe.com/), with Reserved Font Name ‘Source’
+（書体ファイルの名前の表に記載された著作権表示をそのまま写したもの）
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 

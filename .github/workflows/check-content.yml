@@ -1,9 +1,9 @@
 name: check-content
 on:
   push:
-    paths: ["content/**", "tools/**", "package.json", ".github/workflows/check-content.yml"]
+    paths: ["content/**", "tools/**", "package.json", "package-lock.json", ".github/workflows/check-content.yml"]
   pull_request:
-    paths: ["content/**", "tools/**", "package.json"]
+    paths: ["content/**", "tools/**", "package.json", "package-lock.json", ".github/workflows/check-content.yml"]
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -12,5 +12,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
+      - run: npm ci
       - run: npm run check:content

@@ -8,6 +8,8 @@ name: build-inky
 on:
   workflow_dispatch:
   push:
+    # 既定のブランチへの push だけで作る（作業用のブランチの push が、配布中の版を消さないように）
+    branches: [claude/eloquent-fermi-y614zu, main]
     paths: ["tools/inky/**", ".github/workflows/build-inky.yml"]
 permissions:
   contents: write
@@ -76,6 +78,8 @@ jobs:
           - 初めて入れるとき: Inky-win64-ruby.zip を展開して Inky.exe を起動する。
           - 更新するとき: Inky-ruby-app-asar.zip の resources\app.asar で、入れてある Inky の resources\app.asar を上書きする。
           "@
+          gh release view $tag --repo ${{ github.repository }} 2>$null
+          if ($LASTEXITCODE -eq 0) { Write-Host "release $tag already exists; skipping"; exit 0 }
           gh release create $tag Inky-win64-ruby.zip Inky-ruby-app-asar.zip --repo ${{ github.repository }} --target ${{ github.sha }} --prerelease --title "改造版 Inky（ルビ対応） $sha" --notes $notes
           $old = gh release list --repo ${{ github.repository }} --limit 50 --json tagName --jq '.[].tagName' | Where-Object { $_ -like "inky-ruby-*" -and $_ -ne $tag }
           foreach ($t in $old) { gh release delete $t --repo ${{ github.repository }} --yes --cleanup-tag }

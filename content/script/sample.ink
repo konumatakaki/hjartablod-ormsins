@@ -1,5 +1,6 @@
 // 書き方の見本。文章の部分は空欄（括弧）にしてある。
 // 実際の台本では、このファイルを消して、日ごとのファイル（day1.ink など）を作る。
+// 消すときは、main.ink の「INCLUDE sample.ink」と「-> sample_session」の2行も書き換える。
 
 VAR shown_bread = false
 

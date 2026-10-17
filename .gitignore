@@ -2,3 +2,13 @@
 mock/local/
 node_modules/
 build/
+# 画像と音声は、公開するかが決まるまで Git に入れない（open-questions.md E6）
+content/images/
+content/audio/
+# OS と編集ソフトのゴミ
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+# Claude Code の個人設定
+.claude/settings.local.json

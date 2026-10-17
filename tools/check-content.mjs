@@ -47,13 +47,26 @@ for (const file of readdirSync(SCRIPT_DIR).filter((f) => f.endsWith(".ink"))) {
       if (!TAGS.includes(m[1])) warn(`${at} 知らないタグ「#${m[1]}」`);
     }
     const speaker = line.match(/^([^\s「*+\-=~#]{1,12})「/);
-    if (speaker && !SPEAKERS.includes(speaker[1])) warn(`${at} 知らない話者「${speaker[1]}」`);
+    // ひらがなを含む名前（地の文の「彼女は「…」」など）は台詞とみなさない
+    if (speaker && !/[\u3041-\u309f]/.test(speaker[1]) && !SPEAKERS.includes(speaker[1])) warn(`${at} 知らない話者「${speaker[1]}」`);
     const opens = (line.match(/《/g) || []).length, closes = (line.match(/》/g) || []).length;
     if (opens !== closes) err(`${at} ルビの《》の数が合わない`);
     if (line.replace(/\{[^}]*\}/g, "").replace(/\\\|/g, "").includes("|")) err(`${at} ルビ以外の場所に半角の「|」がある（ink の記号として読まれる）`);
     if (line.includes("｜") && !/｜[^《》｜]+《[^》]+》/.test(line)) warn(`${at} 「｜」の後にルビ《》がない`);
     if ((line.match(/\[\[/g) || []).length !== (line.match(/\]\]/g) || []).length) err(`${at} 用語の [[ ]] の数が合わない`);
   });
+}
+
+// 3. ルビの置き換えの処理が、ゲーム用（ink-preprocess.mjs）と改造版 Inky（tools/inky/）で一致しているか
+{
+  const regexOf = (src) => (src.match(/const RUBY = (\/.*\/g);/) || [])[1];
+  const game = regexOf(readFileSync("tools/ink-preprocess.mjs", "utf8"));
+  for (const f of ["tools/inky/inklecate.js", "tools/inky/inky-ruby.patch"]) {
+    const src = readFileSync(f, "utf8").replace(/^\+/gm, "");
+    const inky = regexOf(src);
+    // inklecate.js は文字列の中ではないので、そのまま比べられる
+    if (!inky || inky !== game) err(`${f} のルビの正規表現が tools/ink-preprocess.mjs と一致しない`);
+  }
 }
 
 console.log(`\nエラー ${errors} 件、注意 ${warnings} 件`);

@@ -1,0 +1,9 @@
+# mock/src の Python スクリプトが使うもの
+numpy
+Pillow
+fonttools
+brotli
+# 参考用スクリーンショットの Gradio アプリ（ref-gradio-app.py）だけが使うもの
+gradio==6.30.0
+librosa==1.0.0
+matplotlib

@@ -20,9 +20,15 @@
 |---|---|---|---|
 | DejaVu Sans、DejaVu Sans Mono | DejaVu fonts team（Bitstream Vera を元にする） | 使う文字だけに絞った版を埋め込み | Bitstream Vera の許諾と、DejaVu の変更部分のパブリックドメイン（`licenses/DejaVuFonts.txt`）。改変版は「Bitstream」「Vera」の名を使わないこと |
 | Liberation Mono | Red Hat, Inc.（Google の Cousine を元にする） | 元のファイルのまま埋め込み | SIL Open Font License 1.1、予約書体名「Liberation」（`licenses/LiberationFonts-OFL-1.1.txt`）。改変版を配るなら名前を変える必要があるため、改変しない |
-| Source Sans Pro | Adobe | 元のファイルのまま埋め込み（Gradio が同梱しているもの） | SIL Open Font License 1.1、予約書体名「Source」（`licenses/SourceSansPro-OFL-1.1.txt`） |
+| Source Sans 3 | Adobe | 元のファイルのまま埋め込み（Gradio が「Source Sans Pro」の名前で同梱しているもの。中身は Source Sans 3、Version 3.052） | SIL Open Font License 1.1、予約書体名「Source」（`licenses/SourceSans3-OFL-1.1.txt`） |
 
-見本の HTML は、Google Fonts から Noto Sans JP、Noto Serif JP、BIZ UDPGothic、BIZ UDGothic、DotGothic16 を読み込んでいる（いずれも SIL Open Font License 1.1）。本番では同梱する方針（`docs/design-rules.md`）。
+見本の HTML は、Google Fonts から Noto Sans JP、Noto Serif JP（画面の中）、BIZ UDPGothic、BIZ UDGothic（見本のページの説明文だけ）を読み込んでいる（いずれも SIL Open Font License 1.1）。本番では同梱する方針（`docs/design-rules.md`）。
+
+- 経緯: 以前の版では、Liberation Mono を使う文字だけに絞った改変版を埋め込んでいた（830bd48 で元のファイルに差し替え）。その改変版は Git の履歴と、それ以前の見本の HTML に残っている。オーナーの判断で、履歴は書き換えていない。
+
+## オーナーの作品
+
+- `reference/chouetsu-shoujo-ch1.md`（オーナーがオンラインで公開している過去作）は、このリポジトリのライセンスの対象外。権利はオーナーが保有する。
 
 ## 画像
 
